@@ -70,7 +70,7 @@ services:
     name: smart-city-waste-service
     env: docker
     dockerContext: ./backend/waste-service
-    dockerfile: ./backend/waste-service/Dockerfile
+    dockerfilePath: ./backend/waste-service/Dockerfile
     plan: free
     envVars:
       - key: EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE
