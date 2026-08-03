@@ -1,0 +1,206 @@
+services:
+  # Frontend Service
+  - type: web
+    name: smart-city-frontend
+    env: docker
+    dockerContext: ./frontend/web
+    dockerfilePath: ./frontend/web/Dockerfile
+    plan: free
+    envVars:
+      - key: VITE_API_URL
+        value: https://smart-city-api-gateway.onrender.com/api
+    region: oregon
+
+  # API Gateway
+  - type: web
+    name: smart-city-api-gateway
+    env: docker
+    dockerContext: ./backend/api-gateway
+    dockerfilePath: ./backend/api-gateway/Dockerfile
+    plan: free
+    envVars:
+      - key: EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE
+        value: http://smart-city-eureka.onrender.com/eureka/
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+    region: oregon
+
+  # Eureka Server
+  - type: web
+    name: smart-city-eureka
+    env: docker
+    dockerContext: ./backend/eureka-server
+    dockerfilePath: ./backend/eureka-server/Dockerfile
+    plan: free
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+    region: oregon
+
+  # Auth Service
+  - type: web
+    name: smart-city-auth-service
+    env: docker
+    dockerContext: ./backend/auth-service
+    dockerfilePath: ./backend/auth-service/Dockerfile
+    plan: free
+    envVars:
+      - key: EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE
+        value: http://smart-city-eureka.onrender.com/eureka/
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: smart-city-auth-db
+          property: uri
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: smart-city-auth-db
+          property: username
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: smart-city-auth-db
+          property: password
+      - key: JWT_SECRET
+        generateValue: true
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+    region: oregon
+
+  # Waste Service
+  - type: web
+    name: smart-city-waste-service
+    env: docker
+    dockerContext: ./backend/waste-service
+    dockerfile: ./backend/waste-service/Dockerfile
+    plan: free
+    envVars:
+      - key: EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE
+        value: http://smart-city-eureka.onrender.com/eureka/
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: smart-city-waste-db
+          property: uri
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: smart-city-waste-db
+          property: username
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: smart-city-waste-db
+          property: password
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+    region: oregon
+
+  # Road Service
+  - type: web
+    name: smart-city-road-service
+    env: docker
+    dockerContext: ./backend/road-service
+    dockerfilePath: ./backend/road-service/Dockerfile
+    plan: free
+    envVars:
+      - key: EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE
+        value: http://smart-city-eureka.onrender.com/eureka/
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: smart-city-road-db
+          property: uri
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: smart-city-road-db
+          property: username
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: smart-city-road-db
+          property: password
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+    region: oregon
+
+  # Flood Service
+  - type: web
+    name: smart-city-flood-service
+    env: docker
+    dockerContext: ./backend/flood-service
+    dockerfilePath: ./backend/flood-service/Dockerfile
+    plan: free
+    envVars:
+      - key: EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE
+        value: http://smart-city-eureka.onrender.com/eureka/
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: smart-city-flood-db
+          property: uri
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: smart-city-flood-db
+          property: username
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: smart-city-flood-db
+          property: password
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+    region: oregon
+
+  # Dashboard Service
+  - type: web
+    name: smart-city-dashboard-service
+    env: docker
+    dockerContext: ./backend/dashboard-service
+    dockerfilePath: ./backend/dashboard-service/Dockerfile
+    plan: free
+    envVars:
+      - key: EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE
+        value: http://smart-city-eureka.onrender.com/eureka/
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: smart-city-dashboard-db
+          property: uri
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: smart-city-dashboard-db
+          property: username
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: smart-city-dashboard-db
+          property: password
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+    region: oregon
+
+databases:
+  # Auth Database
+  - name: smart-city-auth-db
+    databaseName: authdb
+    user: smartcity
+    plan: free
+    region: oregon
+
+  # Waste Database
+  - name: smart-city-waste-db
+    databaseName: wastedb
+    user: smartcity
+    plan: free
+    region: oregon
+
+  # Road Database
+  - name: smart-city-road-db
+    databaseName: roaddb
+    user: smartcity
+    plan: free
+    region: oregon
+
+  # Flood Database
+  - name: smart-city-flood-db
+    databaseName: flooddb
+    user: smartcity
+    plan: free
+    region: oregon
+
+  # Dashboard Database
+  - name: smart-city-dashboard-db
+    databaseName: dashboarddb
+    user: smartcity
+    plan: free
+    region: oregon
