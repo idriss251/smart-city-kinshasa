@@ -1,0 +1,1 @@
+export default function StatsCards({stats}:{stats:any}){return <div className='grid grid-cols-4 gap-3'>{Object.entries(stats||{}).map(([k,v])=><div className='panel' key={k}><div className='text-sm text-slate-500'>{k}</div><div className='text-2xl font-bold'>{String(v)}</div></div>)}</div>}

@@ -1,0 +1,1 @@
+CREATE TABLE sensor_data(id BIGSERIAL PRIMARY KEY, sensor_id BIGINT, value DOUBLE PRECISION, unit VARCHAR(30), timestamp TIMESTAMP DEFAULT now());

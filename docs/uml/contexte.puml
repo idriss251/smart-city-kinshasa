@@ -1,0 +1,9 @@
+@startuml
+actor Citoyen
+actor Agent
+rectangle "Plateforme Smart City Kinshasa" as P
+Citoyen --> P : signaler
+Agent --> P : traiter
+P --> "Capteurs IoT" : collecte
+P --> "SIG/PostGIS" : cartes
+@enduml

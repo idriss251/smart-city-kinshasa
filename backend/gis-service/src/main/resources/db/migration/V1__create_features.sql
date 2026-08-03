@@ -1,0 +1,8 @@
+CREATE TABLE IF NOT EXISTS features (
+  id BIGSERIAL PRIMARY KEY,
+  commune VARCHAR(120) NOT NULL,
+  latitude DOUBLE PRECISION,
+  longitude DOUBLE PRECISION,
+  created_at TIMESTAMP DEFAULT now(),
+  updated_at TIMESTAMP DEFAULT now()
+);

@@ -1,0 +1,12 @@
+@startuml
+participant Citoyen
+participant Mobile
+participant Gateway
+participant CitizenService
+participant GIS
+Citoyen->Mobile: saisir signalement
+Mobile->Gateway: POST /api/citizen
+Gateway->CitizenService: créer
+CitizenService->GIS: publier feature
+CitizenService-->Mobile: statut EN_ATTENTE
+@enduml

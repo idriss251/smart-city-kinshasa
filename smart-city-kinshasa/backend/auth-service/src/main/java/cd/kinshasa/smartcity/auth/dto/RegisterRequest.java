@@ -1,0 +1,1 @@
+package cd.kinshasa.smartcity.auth.dto; import jakarta.validation.constraints.*; import cd.kinshasa.smartcity.auth.model.Role; public record RegisterRequest(@NotBlank String username,@Email String email,@Size(min=4) String password,Role role,String commune){}

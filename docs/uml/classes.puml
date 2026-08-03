@@ -1,0 +1,11 @@
+@startuml
+class User
+class Report
+class GarbageBin
+class RoadProblem
+class FloodZone
+class Sensor
+User "1" -- "*" Report
+Report ..> FloodZone
+GarbageBin ..> Sensor
+@enduml

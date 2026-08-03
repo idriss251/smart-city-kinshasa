@@ -1,0 +1,15 @@
+openapi: 3.0.3
+info: { title: Smart City Kinshasa APIs, version: 0.1.0 }
+paths:
+  /api/auth/login:
+    post:
+      summary: Authentification
+      responses: { '200': { description: OK } }
+  /api/waste:
+    get: { summary: Liste des poubelles, responses: { '200': { description: OK } } }
+  /api/road:
+    get: { summary: Liste des problèmes routiers, responses: { '200': { description: OK } } }
+  /api/flood:
+    get: { summary: Liste des zones inondables, responses: { '200': { description: OK } } }
+  /api/citizen:
+    post: { summary: Créer un signalement, responses: { '200': { description: OK } } }

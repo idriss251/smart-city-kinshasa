@@ -1,0 +1,11 @@
+@startuml
+left to right direction
+actor Citoyen
+actor Agent
+actor Décideur
+rectangle Système { usecase "Créer signalement" as UC1 usecase "Consulter carte" as UC2 usecase "Traiter incident" as UC3 usecase "Voir statistiques" as UC4 }
+Citoyen-->UC1
+Citoyen-->UC2
+Agent-->UC3
+Décideur-->UC4
+@enduml

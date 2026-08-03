@@ -1,0 +1,8 @@
+@startuml
+[React Web] --> [API Gateway]
+[Flutter Mobile] --> [API Gateway]
+[API Gateway] --> [Microservices]
+[Microservices] --> [PostgreSQL/PostGIS]
+[IoT Simulation] --> [Mosquitto]
+[Mosquitto] --> [IoT Service]
+@enduml

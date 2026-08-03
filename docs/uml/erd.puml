@@ -1,0 +1,8 @@
+@startuml
+entity users { *id : bigint username email role }
+entity reports { *id : bigint citizen_id type status commune }
+entity garbage_bins { *id : bigint fill_level status commune }
+entity road_problems { *id : bigint type severity status }
+entity flood_zones { *id : bigint risk_level }
+users ||--o{ reports
+@enduml

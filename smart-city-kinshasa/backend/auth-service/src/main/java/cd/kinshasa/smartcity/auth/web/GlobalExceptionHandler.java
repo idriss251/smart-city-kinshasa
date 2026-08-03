@@ -1,0 +1,1 @@
+package cd.kinshasa.smartcity.auth.web; import org.springframework.web.bind.annotation.*; import org.springframework.http.*; import java.util.*; @RestControllerAdvice public class GlobalExceptionHandler{ @ExceptionHandler(Exception.class) ResponseEntity<Map<String,String>> handle(Exception e){return ResponseEntity.badRequest().body(Map.of("error",e.getMessage()));}}

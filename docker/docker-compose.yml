@@ -1,0 +1,85 @@
+services:
+  auth-db:
+    image: postgres:15
+    environment: { POSTGRES_DB: authdb, POSTGRES_USER: smartcity, POSTGRES_PASSWORD: smartcity }
+    ports: ["${AUTH_DB_PORT:-55433}:5432"]
+  gis-db:
+    image: postgis/postgis:15-3.4
+    environment: { POSTGRES_DB: gisdb, POSTGRES_USER: smartcity, POSTGRES_PASSWORD: smartcity }
+    ports: ["${GIS_DB_PORT:-55434}:5432"]
+    volumes: ["./init-scripts:/docker-entrypoint-initdb.d"]
+  waste-db:
+    image: postgis/postgis:15-3.4
+    environment: { POSTGRES_DB: wastedb, POSTGRES_USER: smartcity, POSTGRES_PASSWORD: smartcity }
+    ports: ["${WASTE_DB_PORT:-55435}:5432"]
+  road-db:
+    image: postgis/postgis:15-3.4
+    environment: { POSTGRES_DB: roaddb, POSTGRES_USER: smartcity, POSTGRES_PASSWORD: smartcity }
+    ports: ["${ROAD_DB_PORT:-55436}:5432"]
+  flood-db:
+    image: postgis/postgis:15-3.4
+    environment: { POSTGRES_DB: flooddb, POSTGRES_USER: smartcity, POSTGRES_PASSWORD: smartcity }
+    ports: ["${FLOOD_DB_PORT:-55437}:5432"]
+  citizen-db:
+    image: postgis/postgis:15-3.4
+    environment: { POSTGRES_DB: citizendb, POSTGRES_USER: smartcity, POSTGRES_PASSWORD: smartcity }
+    ports: ["${CITIZEN_DB_PORT:-55438}:5432"]
+  iot-db:
+    image: postgres:15
+    environment: { POSTGRES_DB: iotdb, POSTGRES_USER: smartcity, POSTGRES_PASSWORD: smartcity }
+    ports: ["${IOT_DB_PORT:-55439}:5432"]
+  redis:
+    image: redis:7-alpine
+    ports: ["${REDIS_PORT:-56379}:6379"]
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports: ["${RABBITMQ_PORT:-55672}:5672", "${RABBITMQ_MANAGEMENT_PORT:-15673}:15672"]
+  mosquitto:
+    image: eclipse-mosquitto:2
+    ports: ["${MQTT_PORT:-11883}:1883"]
+    volumes: ["./mosquitto.conf:/mosquitto/config/mosquitto.conf"]
+  eureka-server:
+    build: ../backend/eureka-server
+    ports: ["${EUREKA_PORT:-18761}:8761"]
+  api-gateway:
+    build: ../backend/api-gateway
+    env_file: .env
+    ports: ["${API_GATEWAY_PORT:-18080}:8080"]
+    depends_on: [eureka-server, redis]
+  auth-service:
+    build: ../backend/auth-service
+    env_file: .env
+    environment: { SPRING_DATASOURCE_URL: jdbc:postgresql://auth-db:5432/authdb }
+    depends_on: [auth-db, eureka-server]
+  waste-service:
+    build: ../backend/waste-service
+    environment: { SPRING_DATASOURCE_URL: jdbc:postgresql://waste-db:5432/wastedb, EUREKA_URL: http://eureka-server:8761/eureka/ }
+    depends_on: [waste-db, eureka-server]
+  road-service:
+    build: ../backend/road-service
+    environment: { SPRING_DATASOURCE_URL: jdbc:postgresql://road-db:5432/roaddb, EUREKA_URL: http://eureka-server:8761/eureka/ }
+    depends_on: [road-db, eureka-server]
+  flood-service:
+    build: ../backend/flood-service
+    environment: { SPRING_DATASOURCE_URL: jdbc:postgresql://flood-db:5432/flooddb, EUREKA_URL: http://eureka-server:8761/eureka/ }
+    depends_on: [flood-db, eureka-server]
+  citizen-service:
+    build: ../backend/citizen-service
+    environment: { SPRING_DATASOURCE_URL: jdbc:postgresql://citizen-db:5432/citizendb, EUREKA_URL: http://eureka-server:8761/eureka/ }
+    depends_on: [citizen-db, eureka-server]
+  gis-service:
+    build: ../backend/gis-service
+    environment: { SPRING_DATASOURCE_URL: jdbc:postgresql://gis-db:5432/gisdb, EUREKA_URL: http://eureka-server:8761/eureka/ }
+    depends_on: [gis-db, eureka-server]
+  iot-service:
+    build: ../backend/iot-service
+    environment: { SPRING_DATASOURCE_URL: jdbc:postgresql://iot-db:5432/iotdb, EUREKA_URL: http://eureka-server:8761/eureka/ }
+    depends_on: [iot-db, mosquitto, eureka-server]
+  dashboard-service:
+    build: ../backend/dashboard-service
+    environment: { EUREKA_URL: http://eureka-server:8761/eureka/ }
+    depends_on: [eureka-server]
+  frontend:
+    build: ../frontend/web
+    ports: ["${FRONTEND_PORT:-13000}:80"]
+    depends_on: [api-gateway]

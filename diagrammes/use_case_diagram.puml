@@ -1,0 +1,76 @@
+@startuml SmartCity_UseCase
+
+left to right direction
+skinparam packageStyle rectangle
+
+actor "Administrateur" as Admin
+actor "Agent Municipal" as Agent
+actor "Citoyen" as Citoyen
+actor "Service Technique" as Tech
+actor "Système IoT" as IoT
+
+rectangle "Smart City Kinshasa" {
+    usecase "Gérer les utilisateurs" as UC1
+    usecase "S'authentifier" as UC2
+    usecase "Signaler un incident" as UC3
+    usecase "Gérer les collectes de déchets" as UC4
+    usecase "Surveiller les routes" as UC5
+    usecase "Monitorer les inondations" as UC6
+    usecase "Consulter le tableau de bord" as UC7
+    usecase "Gérer les alertes" as UC8
+    usecase "Administrer le système" as UC9
+    usecase "Planifier les interventions" as UC10
+    usecase "Consulter les statistiques" as UC11
+}
+
+Admin --> UC2
+Admin --> UC9
+Admin --> UC7
+Admin --> UC11
+
+Agent --> UC2
+Agent --> UC4
+Agent --> UC5
+Agent --> UC6
+Agent --> UC8
+Agent --> UC10
+Agent --> UC7
+
+Citoyen --> UC2
+Citoyen --> UC3
+Citoyen --> UC7
+
+Tech --> UC2
+Tech --> UC5
+Tech --> UC6
+Tech --> UC7
+
+IoT --> UC6
+IoT --> UC4
+
+UC3 ..> UC8 : déclenche
+UC6 ..> UC8 : déclenche
+UC5 ..> UC10 : nécessite
+
+note right of UC3
+  Types d'incidents :
+  - Déchets
+  - Routes
+  - Inondations
+end note
+
+note left of UC4
+  Fonctionnalités :
+  - État des poubelles
+  - Planification collectes
+  - Volume quotidien
+end note
+
+note right of UC6
+  Surveillance :
+  - Niveau d'eau
+  - Seuils d'alerte
+  - Tendance
+end note
+
+@enduml

@@ -1,0 +1,50 @@
+{
+  "info": {
+    "name": "Smart City Kinshasa",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/api/auth/login",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"username\":\"admin\",\"password\":\"password\"}"
+        }
+      }
+    },
+    {
+      "name": "Dashboard stats",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/dashboard/stats"
+      }
+    },
+    {
+      "name": "Waste list",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/waste"
+      }
+    },
+    {
+      "name": "Create report",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/api/citizen",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"citizenId\":3,\"type\":\"DECHET\",\"description\":\"Dépôt sauvage\",\"commune\":\"Kalamu\",\"latitude\":-4.35,\"longitude\":15.31}"
+        }
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080"
+    }
+  ]
+}

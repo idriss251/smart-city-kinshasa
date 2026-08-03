@@ -1,0 +1,1 @@
+import 'package:flutter/material.dart'; class ReportListScreen extends StatelessWidget{ const ReportListScreen({super.key}); @override Widget build(BuildContext context)=>Scaffold(appBar:AppBar(title:const Text('Smart City Kinshasa')),body:const Padding(padding:EdgeInsets.all(16),child:Text('Prototype mobile citoyen'))); }

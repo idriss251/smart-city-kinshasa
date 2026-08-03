@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS flood_zones (
+  id BIGSERIAL PRIMARY KEY, commune VARCHAR(120) NOT NULL, latitude DOUBLE PRECISION, longitude DOUBLE PRECISION,
+  created_at TIMESTAMP DEFAULT now(), updated_at TIMESTAMP DEFAULT now(), name VARCHAR(160), radius DOUBLE PRECISION,
+  risk_level VARCHAR(40)
+);

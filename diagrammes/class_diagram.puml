@@ -1,0 +1,212 @@
+@startuml SmartCity_ClassDiagram
+
+skinparam classAttributeIconSize 0
+skinparam class {
+    BackgroundColor White
+    ArrowColor Black
+    BorderColor Black
+}
+
+' Classes Utilisateur
+abstract class Utilisateur {
+    - id: Long
+    - username: String
+    - email: String
+    - password_hash: String
+    - role: String
+    - commune: String
+    - created_at: Timestamp
+    - updated_at: Timestamp
+    + authenticate(): Boolean
+    + updateProfile(): Void
+}
+
+class Admin {
+    + manageUsers(): Void
+    + viewStatistics(): Void
+    + configureSystem(): Void
+}
+
+class Agent {
+    + handleInterventions(): Void
+    + updateStatus(): Void
+    + viewAssignedTasks(): Void
+}
+
+class Citoyen {
+    + reportIncident(): Void
+    + viewDashboard(): Void
+    + trackStatus(): Void
+}
+
+' Classes Déchets
+class Poubelle {
+    - id: Long
+    - localisation: String
+    - niveau_remplissage: Integer
+    - statut: String
+    - derniere_collecte: Timestamp
+    - volume_quotidien: Integer
+    + getFillLevel(): Integer
+    + isCritical(): Boolean
+    + scheduleCollection(): Void
+}
+
+class Collecte {
+    - id: Long
+    - poubelle_id: Long
+    - date_collecte: Timestamp
+    - volume: Integer
+    - agent_id: Long
+    + completeCollection(): Void
+    + recordVolume(): Void
+}
+
+class ZoneDechets {
+    - id: Long
+    - commune: String
+    - capacite: Integer
+    - volume_quotidien: Integer
+    + calculateDailyVolume(): Integer
+    + getCapacityUtilization(): Float
+}
+
+' Classes Routes
+class ProblemeRoutier {
+    - id: Long
+    - type: String
+    - localisation: String
+    - gravite: String
+    - statut: String
+    - date_signalement: Timestamp
+    - temps_reparation_estime: Integer
+    - impact_trafic: String
+    + assessSeverity(): String
+    + calculateTrafficImpact(): String
+    + updateStatus(): Void
+}
+
+class Intervention {
+    - id: Long
+    - probleme_id: Long
+    - agent_id: Long
+    - date_intervention: Timestamp
+    - resultat: String
+    + completeIntervention(): Void
+    + reportResult(): Void
+}
+
+class Route {
+    - id: Long
+    - nom: String
+    - description: String
+    - etat: String
+    + inspect(): Void
+    + updateCondition(): Void
+}
+
+' Classes Inondations
+class ZoneInondable {
+    - id: Long
+    - nom: String
+    - niveau_actuel: Decimal
+    - seuil_alerte: Decimal
+    - tendance: String
+    - niveau_risque: String
+    + isAboveThreshold(): Boolean
+    + calculateRiskLevel(): String
+    + getTrend(): String
+}
+
+class Mesure {
+    - id: Long
+    - zone_id: Long
+    - timestamp: Timestamp
+    - niveau: Decimal
+    + recordMeasurement(): Void
+    + compareWithThreshold(): Boolean
+}
+
+class Alerte {
+    - id: Long
+    - zone_id: Long
+    - niveau: String
+    - date: Timestamp
+    - statut: String
+    + activate(): Void
+    + deactivate(): Void
+    + notifyCitizens(): Void
+}
+
+' Classes Signalements
+class Signalement {
+    - id: Long
+    - type: String
+    - description: String
+    - localisation: String
+    - citoyen_id: Long
+    - statut: String
+    - date_creation: Timestamp
+    + submit(): Void
+    + trackProgress(): String
+    + addPhoto(): Void
+}
+
+class Rapport {
+    - id: Long
+    - signalement_id: Long
+    - contenu: String
+    - date_generation: Timestamp
+    + generate(): Void
+    + exportPDF(): Void
+    + sendEmail(): Void
+}
+
+' Relations Héritage
+Utilisateur <|-- Admin
+Utilisateur <|-- Agent
+Utilisateur <|-- Citoyen
+
+' Relations Associations
+Agent "1" -- "*" Collecte : effectue
+Poubelle "1" -- "*" Collecte : est collectée
+ZoneDechets "1" -- "*" Poubelle : contient
+
+Agent "1" -- "*" Intervention : réalise
+ProblemeRoutier "1" -- "*" Intervention : nécessite
+Route "1" -- "*" ProblemeRoutier : située sur
+
+ZoneInondable "1" -- "*" Mesure : a
+ZoneInondable "1" -- "*" Alerte : génère
+
+Citoyen "1" -- "*" Signalement : crée
+Signalement "1" -- "0..1" Rapport : produit
+
+' Relations entre services
+Signalement --> ProblemeRoutier : peut créer
+Signalement --> ZoneInondable : peut alerter
+Signalement --> Poubelle : peut concerner
+
+note right of Utilisateur
+  Héritage :
+  - Admin : gestion système
+  - Agent : interventions
+  - Citoyen : signalements
+end note
+
+note left of ZoneInondable
+  Surveillance :
+  - Niveau d'eau en temps réel
+  - Seuils d'alerte dynamiques
+  - Tendance (hausse/stable)
+end note
+
+note bottom of ProblemeRoutier
+  Types :
+  - Nid de poule
+  - Fissure
+  - Effondrement
+  - Éclairage défaillant
+end note
+
+@enduml

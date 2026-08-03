@@ -1,0 +1,1 @@
+import {NavLink} from 'react-router-dom'; const links=['dashboard','waste','road','flood','reports','gis']; export default function Sidebar(){return <aside className='w-56 bg-slate-900 text-white p-3'>{links.map(l=><NavLink className='block px-3 py-2 rounded hover:bg-slate-700' to={'/'+l} key={l}>{l}</NavLink>)}</aside>}

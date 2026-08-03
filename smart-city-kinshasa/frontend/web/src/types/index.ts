@@ -1,0 +1,1 @@
+export type Role='ADMIN'|'AGENT'|'CITOYEN'|'DECIDEUR'; export interface User{ id:number; username:string; email:string; role:Role; commune:string } export interface GeoItem{ id:number; commune:string; latitude:number; longitude:number; status?:string; description?:string; }

@@ -1,0 +1,1 @@
+import { api } from './api'; export const dashboardService={ list:()=>api.get('/api/dashboard'), get:(id:number)=>api.get(`/api/dashboard/${id}`), create:(data:any)=>api.post('/api/dashboard',data) };

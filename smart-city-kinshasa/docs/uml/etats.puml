@@ -1,0 +1,9 @@
+@startuml
+[*] --> EN_ATTENTE
+EN_ATTENTE --> EN_COURS
+EN_COURS --> RESOLU
+EN_ATTENTE --> REJETE
+EN_COURS --> REJETE
+RESOLU --> [*]
+REJETE --> [*]
+@enduml

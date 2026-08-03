@@ -1,0 +1,140 @@
+@startuml SmartCity_ActivityDiagram
+
+skinparam activity {
+  BackgroundColor #F0F0F0
+  BorderColor #000000
+}
+
+start
+
+:Connexion Utilisateur;
+
+if (Authentification réussie?) then (non)
+  :Afficher erreur;
+  stop
+else (oui)
+  :Afficher Dashboard;
+endif
+
+fork
+  :Processus Signalement Citoyen;
+  
+  :Citoyen clique "Signaler";
+  :Formulaire s'affiche;
+  :Citoyen remplit formulaire;
+  
+  if (Type d'incident?) then (Déchets)
+    :Soumettre à Waste Service;
+    :Créer signalement déchets;
+  elseif (Routes)
+    :Soumettre à Road Service;
+    :Créer problème routier;
+  elseif (Inondations)
+    :Soumettre à Flood Service;
+    :Créer alerte inondation;
+  endif
+  
+  :Enregistrer en base de données;
+  :Envoyer confirmation;
+  :Notifier agents concernés;
+  
+fork again
+  :Processus Intervention Agent;
+  
+  :Agent consulte tableau de bord;
+  :Liste interventions assignées;
+  
+  if (Intervention urgente?) then (oui)
+    :Prioriser intervention;
+    :Agent se rend sur site;
+    :Évaluer situation;
+    :Exécuter intervention;
+    :Mettre à jour statut;
+    :Générer rapport;
+  else (non)
+    :Planifier intervention;
+    :Attendre créneau disponible;
+  endif
+  
+fork again
+  :Processus Surveillance Inondations;
+  
+  :Capteurs IoT mesurent niveau;
+  :Transmettre données à Flood Service;
+  
+  if (Niveau > seuil critique?) then (oui)
+    :Générer alerte urgente;
+    :Notifier citoyens zone;
+    :Déployer équipes secours;
+  elseif (Niveau > seuil warning?) then (oui)
+    :Générer alerte modérée;
+    :Surveillance renforcée;
+  else (non)
+    :Surveillance normale;
+  endif
+  
+  :Enregistrer mesure historique;
+  :Calculer tendance;
+  
+fork again
+  :Processus Collecte Déchets;
+  
+  :Surveiller niveau poubelles;
+  
+  if (Niveau > 90%?) then (oui)
+    :Marquer comme critique;
+    :Planifier collecte urgente;
+  elseif (Niveau > 70%) then (oui)
+    :Marquer comme warning;
+    :Planifier collecte prochaine;
+  else (non)
+    :Statut normal;
+  endif
+  
+  :Agent effectue collecte;
+  :Enregistrer volume collecté;
+  :Mettre à jour niveau poubelle;
+  :Calculer statistiques quotidiennes;
+  
+fork again
+  :Processus Dashboard Temps Réel;
+  
+  :Agréger données services;
+  :Calculer statistiques 24h;
+  :Générer graphiques;
+  :Mettre à jour cartes;
+  
+  repeat every minute
+    :Rafraîchir données;
+  repeat while (Système actif)
+  
+end fork
+
+:Afficher résultats sur Dashboard;
+
+if (Nouvelle alerte?) then (oui)
+  :Afficher notification;
+  :Envoyer SMS/Email;
+endif
+
+stop
+
+note right of "Processus Surveillance Inondations"
+  Surveillance continue
+  Capteurs IoT
+  Alertes automatiques
+end note
+
+note left of "Processus Collecte Déchets"
+  Optimisation tournées
+  Prévision volumes
+  Réduction coûts
+end note
+
+note bottom of "Processus Dashboard Temps Réel"
+  Mise à jour automatique
+  Données horaires
+  Visualisation interactive
+end note
+
+@enduml

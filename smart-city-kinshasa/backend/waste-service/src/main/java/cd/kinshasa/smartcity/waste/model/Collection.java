@@ -1,0 +1,1 @@
+package cd.kinshasa.smartcity.waste.model; import jakarta.persistence.*; import java.time.Instant; @Entity @Table(name="collections") public class Collection{ @Id @GeneratedValue(strategy=GenerationType.IDENTITY) public Long id; public Long binId; public Instant date=Instant.now(); public String collectedBy; public Double quantity; public String notes; }

@@ -1,0 +1,3 @@
+@startuml
+node DockerHost { node Gateway node Eureka database Postgres node Mosquitto node Frontend }
+@enduml

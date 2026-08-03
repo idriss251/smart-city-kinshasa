@@ -1,0 +1,1 @@
+import 'package:flutter/material.dart'; import 'config/routes.dart'; class SmartCityApp extends StatelessWidget{ const SmartCityApp({super.key}); @override Widget build(BuildContext context)=>MaterialApp.router(title:'Smart City Kinshasa',routerConfig: router,theme:ThemeData(colorSchemeSeed:Colors.teal)); }

@@ -1,0 +1,1 @@
+package cd.kinshasa.smartcity.iot.model; import jakarta.persistence.*; import java.time.Instant; @Entity @Table(name="sensor_data") public class SensorData{ @Id @GeneratedValue(strategy=GenerationType.IDENTITY) public Long id; public Long sensorId; public Double value; public String unit; public Instant timestamp=Instant.now(); }

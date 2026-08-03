@@ -1,0 +1,543 @@
+================================================================================
+                    GUIDE DE RÉDACTION DU MÉMOIRE
+              APPLICATION SMART CITY KINSHASA
+================================================================================
+
+INTRODUCTION GÉNÉRALE
+• Problématique
+• Hypothèse
+• Choix et intérêt du sujet
+• Délimitation du sujet
+• Méthodes et techniques utilisées
+• Difficultés rencontrées
+• Subdivision du travail
+
+--------------------------------------------------------------------------------
+CONTEXTE SPÉCIFIQUE - SMART CITY KINSHASA
+--------------------------------------------------------------------------------
+
+Problématique :
+La ville de Kinshasa fait face à d'importants défis urbains : gestion inefficace 
+des déchets, problèmes d'infrastructure routière, risques d'inondations, et 
+manque de coordination entre les services municipaux. Les systèmes actuels sont 
+souvent manuels, fragmentés et ne permettent pas une surveillance en temps réel.
+
+Hypothèse :
+L'implémentation d'une plateforme numérique intégrée de gestion urbaine permet 
+d'améliorer significativement l'efficacité des services municipaux, de réduire 
+les temps de réponse aux incidents, et d'optimiser l'allocation des ressources.
+
+Choix et intérêt du sujet :
+- Contexte d'urbanisation rapide de Kinshasa
+- Bescri croissant de solutions intelligentes de gestion urbaine
+- Opportunité d'appliquer les technologies modernes (IoT, microservices)
+- Potentiel d'amélioration de la qualité de vie des citoyens
+
+Délimitation du sujet :
+- Périmètre : Gestion des déchets, surveillance routière, monitoring des inondations
+- Zone géographique : Communes de Kinshasa (Gombe, Limete, Kalamu, etc.)
+- Technologies : Microservices Spring Boot, React, Docker, PostgreSQL
+
+Méthodes et techniques :
+- Analyse de l'existant (étude des systèmes municipaux actuels)
+- Conception UML (diagrammes de cas d'utilisation, classes, séquences, activités)
+- Développement agile avec architecture microservices
+- Tests fonctionnels et intégration continue
+
+Difficultés rencontrées :
+- Complexité de l'architecture microservices
+- Intégration des différents services (authentification, gateway, bases de données)
+- Gestion des données en temps réel
+- Sécurité et authentification des utilisateurs
+
+Subdivision du travail :
+- Introduction générale
+- Étude de l'existant (systèmes municipaux actuels)
+- Conception du nouveau système (UML)
+- Réalisation technique (microservices, frontend, base de données)
+- Tests et déploiement
+- Conclusion et perspectives
+
+================================================================================
+CHAPITRE I : ÉTUDE DE L'EXISTANT
+================================================================================
+
+1.1. Présentation de la ville de Kinshasa
+• Situation géographique
+  - Capitale de la RD Congo
+  - Plus grande ville d'Afrique subsaharienne
+  - Population estimée à 17 millions d'habitants
+  - 24 communes administratives
+
+• Aperçu historique
+  - Fondée en 1881 par Henry Morton Stanley
+  - Évolution de village colonial à métropole africaine
+  - Défis d'urbanisation rapide
+
+• Organisation administrative
+  o Communes organisées
+  o Administration municipale
+  o Infrastructure urbaine
+  o Organigramme général de la mairie
+
+Section II : Analyse de l'existant
+• Étude de la structure
+  o Organigramme des services concernés
+    - Direction des services techniques
+    - Service de propreté et assainissement
+    - Service des travaux publics
+    - Service de gestion des risques
+  o Description des postes
+    - Responsable de la gestion des déchets
+    - Inspecteur routier
+    - Agent de surveillance des inondations
+    - Administrateur système
+
+• Étude du système informationnel
+  o Narration (fonctionnement actuel)
+    - Signalements par téléphone ou déplacement physique
+    - Traitement manuel des demandes
+    - Absence de suivi en temps réel
+    - Rapports papier mensuels
+  o Flux d'information
+    - Citoyen → Service municipal (signalement)
+    - Service municipal → Terrain (intervention)
+    - Terrain → Administration (rapport)
+    - Absence de centralisation des données
+
+• Étude des documents
+  o Rapports d'intervention
+  o Registres de collecte des déchets
+  o Rapports d'inspection routière
+  o Bulletins météo et surveillance des inondations
+
+• Étude des moyens
+  o Moyens humains
+    - Personnel limité par service
+    - Formation technique insuffisante
+    - Coordination difficile entre services
+  o Moyens matériels
+    - Véhicules de collecte insuffisants
+    - Équipement de surveillance basique
+    - Absence de capteurs IoT
+  o Moyens financiers
+    - Budget limité
+    - Coûts d'intervention élevés
+    - Manque de visibilité sur les dépenses
+
+Section III : Critique de l'existant
+• Critique organisationnelle
+  - Fragmentation des services
+  - Manque de coordination inter-services
+  - Processus décisionnels lents
+
+• Critique des moyens humains
+  - Personnel insuffisant
+  - Formation technique limitée
+  - Rotation élevée du personnel
+
+• Critique des moyens matériels
+  - Équipement obsolète
+  - Absence de technologies modernes
+  - Maintenance insuffisante
+
+• Critique du flux d'information
+  - Communication manuelle
+  - Délais de traitement importants
+  - Perte d'information
+  - Absence de traçabilité
+
+• Proposition de solutions
+  o Solution manuelle
+    - Renforcement du personnel
+    - Amélioration des procédures
+    - Limitations : coûts élevés, peu scalable
+  
+  o Solution informatique
+    - Plateforme numérique intégrée
+    - Surveillance en temps réel
+    - Automatisation des processus
+    - Avantages : efficacité, traçabilité, coût réduit
+  
+  o Choix de la meilleure solution
+    - Solution informatique retenue
+    - Justification : modernité, scalabilité, coût-bénéfice
+
+================================================================================
+CHAPITRE II : CONCEPTION DU NOUVEAU SYSTÈME D'INFORMATION (Version UML)
+================================================================================
+
+SECTION I : Approche de conception
+La conception d'un système d'information de gestion urbaine nécessite une 
+modélisation rigoureuse permettant de représenter clairement les données, 
+les acteurs, les interactions et les processus internes. Contrairement à la 
+méthode Merise utilisée dans certains travaux, nous avons retenu dans ce 
+mémoire le langage UML (Unified Modeling Language), un standard international 
+largement utilisé dans l'ingénierie logicielle.
+
+UML offre une vision plus intuitive, orientée objet, et mieux adaptée aux 
+applications modernes, notamment Web et mobiles. Il permet de représenter un 
+système à travers plusieurs types de diagrammes complémentaires.
+
+SECTION II : Diagrammes UML utilisés
+Dans le cadre de ce projet Smart City, nous avons utilisé les diagrammes UML suivants :
+1. Diagramme de cas d'utilisation (Use Case Diagram)
+2. Diagramme de classes
+3. Diagramme de séquence
+4. Diagramme d'activités
+5. Diagramme de déploiement
+
+Chacun de ces diagrammes joue un rôle précis dans la conception du système.
+
+--------------------------------------------------------------------------------
+2.1. Diagramme de cas d'utilisation (Use Case)
+--------------------------------------------------------------------------------
+
+2.1.1. Objectif
+Le diagramme de cas d'utilisation permet de représenter les interactions entre 
+les acteurs (utilisateurs ou systèmes externes) et les fonctionnalités du système. 
+Il constitue la première étape de la modélisation UML et sert de base pour 
+comprendre les besoins fonctionnels de la plateforme Smart City.
+
+2.1.2. Acteurs identifiés
+À partir de l'analyse de l'existant, les acteurs du système sont :
+• Administrateur (gestion globale du système)
+• Agent municipal (gestion des interventions)
+• Citoyen (signalement et consultation)
+• Service technique (supervision et maintenance)
+• Systèmes externes (capteurs IoT, services météo)
+
+2.1.3. Principaux cas d'utilisation
+• Gérer les utilisateurs (authentification, rôles)
+• Signaler un incident (déchets, routes, inondations)
+• Gérer les collectes de déchets
+• Surveiller les routes et infrastructures
+• Monitorer les zones inondables
+• Consulter le tableau de bord
+• Gérer les alertes et notifications
+• Administrer le système
+
+2.1.4. Rédaction académique
+Le diagramme de cas d'utilisation du système Smart City représente les 
+différentes fonctionnalités accessibles aux acteurs. Il permet de visualiser 
+les interactions principales telles que le signalement d'incidents par les 
+citoyens, la gestion des interventions par les agents municipaux, la 
+surveillance en temps réel des zones à risque, et l'administration du système. 
+Ce diagramme constitue la base fonctionnelle du système et oriente la 
+conception des autres modèles UML.
+
+--------------------------------------------------------------------------------
+2.2. Diagramme de classes
+--------------------------------------------------------------------------------
+
+2.2.1. Objectif
+Le diagramme de classes est le cœur de la modélisation UML. Il permet de 
+représenter :
+• les entités du système,
+• leurs attributs,
+• leurs méthodes,
+• les relations entre elles (associations, agrégations, compositions, héritages).
+
+2.2.2. Classes principales
+À partir de l'analyse de l'existant, les classes suivantes sont identifiées :
+
+Classes de gestion des utilisateurs :
+• Utilisateur (id, username, email, password_hash, role, commune)
+• Admin (hérite de Utilisateur)
+• Agent (hérite de Utilisateur)
+• Citoyen (hérite de Utilisateur)
+
+Classes de gestion des déchets :
+• Poubelle (id, localisation, niveau_remplissage, statut, derniere_collecte)
+• Collecte (id, poubelle_id, date_collecte, volume, agent_id)
+• ZoneDechets (id, commune, capacite, volume_quotidien)
+
+Classes de gestion des routes :
+• ProblemeRoutier (id, type, localisation, gravite, statut, date_signalement)
+• Intervention (id, probleme_id, agent_id, date_intervention, resultat)
+• Route (id, nom, description, etat)
+
+Classes de gestion des inondations :
+• ZoneInondable (id, nom, niveau_actuel, seuil_alerte, tendance)
+• Mesure (id, zone_id, timestamp, niveau, population_affectee)
+• Alerte (id, zone_id, niveau, date, statut)
+
+Classes de gestion des signalements :
+• Signalement (id, type, description, localisation, citoyen_id, statut)
+• Rapport (id, signalement_id, contenu, date_generation)
+
+2.2.3. Exemple de rédaction académique
+Le diagramme de classes du système présente les différentes entités manipulées 
+par l'application Smart City. Chaque classe est définie par ses attributs et 
+ses opérations. Les relations entre les classes traduisent les dépendances 
+logiques du système, notamment les associations entre Utilisateur, Signalement, 
+Intervention et les entités métier spécifiques (Poubelle, ProblemeRoutier, 
+ZoneInondable). Ce diagramme constitue la base du modèle de données et guide 
+la création de la base PostgreSQL.
+
+--------------------------------------------------------------------------------
+2.3. Diagramme de séquence
+--------------------------------------------------------------------------------
+
+2.3.1. Objectif
+Le diagramme de séquence permet de représenter le déroulement temporel d'un 
+scénario précis, par exemple :
+• Connexion d'un utilisateur
+• Signalement d'un incident par un citoyen
+• Traitement d'une alerte inondation
+• Planification d'une collecte de déchets
+• Enregistrement d'un problème routier
+
+2.3.2. Rédaction académique
+Le diagramme de séquence illustre l'enchaînement des messages échangés entre 
+les objets du système lors de l'exécution d'un cas d'utilisation. Il permet 
+de visualiser la dynamique du système et de vérifier la cohérence des 
+interactions entre les classes, notamment dans le flux de traitement des 
+signalements citoyens jusqu'à l'intervention des agents municipaux.
+
+--------------------------------------------------------------------------------
+2.4. Diagramme d'activités
+--------------------------------------------------------------------------------
+
+2.4.1. Objectif
+Ce diagramme représente le flux de travail (workflow) d'un processus :
+• Processus de signalement citoyen
+• Processus de traitement des alertes
+• Processus de collecte des déchets
+• Processus d'intervention routière
+• Processus de surveillance des inondations
+
+2.4.2. Rédaction académique
+Le diagramme d'activités permet de modéliser les différentes étapes d'un 
+processus métier urbain. Il met en évidence les décisions, les parallélismes 
+et les transitions entre les actions. Ce diagramme est particulièrement utile 
+pour optimiser les procédures de gestion municipale et assurer une réponse 
+rapide aux incidents.
+
+--------------------------------------------------------------------------------
+2.5. Diagramme de déploiement
+--------------------------------------------------------------------------------
+
+Objectif
+Représenter l'architecture technique :
+• Serveur Frontend (React + Nginx)
+• API Gateway (Spring Cloud Gateway)
+• Microservices (Auth, Waste, Road, Flood, Dashboard)
+• Base de données (PostgreSQL pour chaque service)
+• Redis (cache et messagerie)
+• RabbitMQ (gestion des événements)
+• Eureka Server (service discovery)
+• Mosquitto (MQTT pour IoT)
+
+Architecture :
+- Frontend : Port 13000
+- API Gateway : Port 18080
+- Eureka Server : Port 18761
+- Bases de données : Ports 55433, 55434, 55435, 55436, 55439
+- Redis : Port 63790
+- RabbitMQ Management : Port 15673
+
+SECTION III : Synthèse de la conception UML
+L'utilisation du langage UML a permis de structurer la conception du système 
+Smart City de manière claire, cohérente et orientée objet. Les différents 
+diagrammes (cas d'utilisation, classes, séquences, activités, déploiement) 
+offrent une vision complète du fonctionnement du système, tant du point de 
+vue fonctionnel que structurel. Cette modélisation constitue une base solide 
+pour la phase de réalisation, facilitant le développement, les tests et la 
+maintenance de l'application.
+
+================================================================================
+CHAPITRE III : RÉALISATION DU SYSTÈME
+================================================================================
+
+Technologies utilisées :
+
+Backend (Microservices Spring Boot) :
+• Java 17+ / Spring Boot 3.x
+• Spring Cloud (Gateway, Eureka)
+• Spring Security (JWT, BCrypt)
+• PostgreSQL / PostGIS (données géospatiales)
+• Redis (cache)
+• RabbitMQ (messagerie)
+• Mosquitto (MQTT pour IoT)
+• Flyway (migrations de base de données)
+
+Frontend :
+• React 18+ avec TypeScript
+• Vite (build tool)
+• TailwindCSS (styling)
+• Lucide React (icônes)
+• Chart.js / React ChartJS-2 (graphiques)
+• React Hook Form (formulaires)
+• Axios (client HTTP)
+
+Infrastructure :
+• Docker & Docker Compose
+• Nginx (reverse proxy)
+• Architecture microservices
+• Service Discovery (Eureka)
+
+Environnement de développement :
+• Windows / Linux / macOS
+• Node.js 20+
+• Java 17+
+• Docker Desktop
+• Git (version control)
+
+--------------------------------------------------------------------------------
+INTERFACES (Description)
+--------------------------------------------------------------------------------
+
+1. Page d'accueil
+   - Présentation de la plateforme Smart City
+   - Statistiques globales
+   - Accès aux différents services
+
+2. Page de connexion
+   - Formulaire d'authentification
+   - Gestion des rôles (Admin, Agent, Citoyen)
+   - Sécurité JWT
+
+3. Tableau de bord (Dashboard)
+   - Statistiques en temps réel (24h)
+   - Graphiques d'évolution
+   - Alertes prioritaires
+   - Derniers signalements
+   - Mise à jour automatique par minute
+
+4. Gestion des déchets (Waste Dashboard)
+   - État des poubelles par commune
+   - Niveau de remplissage (60-100%)
+   - Volume quotidien en kg
+   - Carte de localisation
+   - Alertes de collecte
+   - Mise à jour horaire
+
+5. Gestion des routes (Road Dashboard)
+   - Liste des problèmes routiers
+   - Types : nids de poule, fissures, effondrements
+   - Gravité : critique, élevée, moyenne
+   - Temps de réparation estimé
+   - Impact sur le trafic
+   - Statut d'intervention
+
+6. Surveillance des inondations (Flood Dashboard)
+   - Niveau d'eau par zone
+   - Seuils d'alerte
+   - Tendance (hausse/stable)
+   - Population affectée
+   - Carte des zones à risque
+   - Mise à jour en temps réel
+
+--------------------------------------------------------------------------------
+CODES SOURCES (Extraits significatifs)
+--------------------------------------------------------------------------------
+
+1. Service d'authentification (Auth Service)
+   - Contrôleur de connexion
+   - Génération JWT
+   - Validation BCrypt
+   - Gestion des rôles
+
+2. Service de gestion des déchets (Waste Service)
+   - API REST pour les poubelles
+   - Calcul des niveaux de remplissage
+   - Planification des collectes
+
+3. Service routier (Road Service)
+   - Gestion des problèmes routiers
+   - Suivi des interventions
+   - Calcul d'impact trafic
+
+4. Service d'inondation (Flood Service)
+   - Surveillance des niveaux d'eau
+   - Génération d'alertes
+   - Calcul de population affectée
+
+5. API Gateway
+   - Routage des requêtes
+   - Load balancing
+   - Sécurité globale
+
+6. Frontend React
+   - Composants Dashboard
+   - Services API
+   - Gestion d'état
+   - Mise à jour en temps réel
+
+--------------------------------------------------------------------------------
+STRUCTURE DE LA BASE DE DONNÉES (SQL)
+--------------------------------------------------------------------------------
+
+Base de données auth-service (authdb) :
+CREATE TABLE users(
+  id BIGSERIAL PRIMARY KEY, 
+  username VARCHAR(80) UNIQUE NOT NULL, 
+  email VARCHAR(160) UNIQUE NOT NULL, 
+  password_hash VARCHAR(255) NOT NULL, 
+  role VARCHAR(30) NOT NULL, 
+  commune VARCHAR(100), 
+  created_at TIMESTAMP DEFAULT now(), 
+  updated_at TIMESTAMP DEFAULT now()
+);
+
+Base de données waste-service (wastedb) :
+CREATE TABLE bins(
+  id BIGSERIAL PRIMARY KEY,
+  location VARCHAR(255) NOT NULL,
+  fill_level INTEGER,
+  status VARCHAR(20),
+  last_collection TIMESTAMP,
+  daily_volume INTEGER
+);
+
+Base de données road-service (roaddb) :
+CREATE TABLE road_problems(
+  id BIGSERIAL PRIMARY KEY,
+  type VARCHAR(100),
+  location VARCHAR(255),
+  severity VARCHAR(20),
+  status VARCHAR(20),
+  reported_at TIMESTAMP,
+  estimated_repair_hours INTEGER,
+  traffic_impact VARCHAR(20)
+);
+
+Base de données flood-service (flooddb) :
+CREATE TABLE flood_zones(
+  id BIGSERIAL PRIMARY KEY,
+  name VARCHAR(100),
+  current_level DECIMAL(5,2),
+  threshold DECIMAL(5,2),
+  trend VARCHAR(20),
+  risk_level VARCHAR(20),
+  affected_population INTEGER
+);
+
+Base de données dashboard-service (dashboarddb) :
+CREATE TABLE statistics(
+  id BIGSERIAL PRIMARY KEY,
+  metric_type VARCHAR(50),
+  value INTEGER,
+  timestamp TIMESTAMP
+);
+
+--------------------------------------------------------------------------------
+CONCLUSION
+--------------------------------------------------------------------------------
+
+La réalisation de la plateforme Smart City Kinshasa a permis de mettre en 
+œuvre une solution moderne de gestion urbaine basée sur une architecture 
+microservices. L'utilisation de technologies contemporaines (Spring Boot, 
+React, Docker) et l'application d'une méthodologie UML rigoureuse ont abouti 
+à un système fonctionnel, évolutif et adapté aux besoins de la ville de 
+Kinshasa.
+
+Les perspectives d'avenir incluent :
+- Intégration de capteurs IoT réels
+- Extension à d'autres services municipaux
+- Développement d'une application mobile
+- Analyse prédictive avec machine learning
+- Intégration avec d'autres villes du pays
+
+

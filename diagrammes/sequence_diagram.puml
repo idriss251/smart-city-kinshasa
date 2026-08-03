@@ -1,0 +1,120 @@
+@startuml SmartCity_SequenceDiagram
+
+skinparam sequenceMessageAlign center
+skinparam noteBackgroundColor #FEFECE
+skinparam noteBorderColor #E0E000
+
+actor "Citoyen" as Citizen
+participant "Frontend React" as Frontend
+participant "API Gateway" as Gateway
+participant "Auth Service" as Auth
+participant "Waste Service" as Waste
+participant "Road Service" as Road
+participant "Flood Service" as Flood
+participant "Dashboard Service" as Dashboard
+database "PostgreSQL" as DB
+
+== Scénario 1: Connexion Utilisateur ==
+
+Citoyen -> Frontend: Saisit identifiants (username/password)
+Frontend -> Gateway: POST /auth/login
+Gateway -> Auth: POST /auth/login
+Auth -> DB: Vérifie utilisateur
+DB --> Auth: Retourne utilisateur
+Auth -> Auth: Vérifie mot de passe (BCrypt)
+Auth --> Gateway: Retourne token JWT
+Gateway --> Frontend: Retourne token JWT
+Frontend -> Frontend: Stocke token (localStorage)
+Frontend --> Citizen: Redirige vers Dashboard
+
+note right of Auth
+  Authentification JWT
+  Token valide 24h
+end note
+
+== Scénario 2: Signalement d'incident ==
+
+Citoyen -> Frontend: Clique "Signaler incident"
+Frontend -> Frontend: Affiche formulaire
+Citoyen -> Frontend: Remplit formulaire (type, description, localisation)
+Frontend -> Gateway: POST /reports (avec token)
+Gateway -> Road: POST /road/problems (si type = route)
+Road -> DB: Enregistre problème
+DB --> Road: Confirmation
+Road --> Gateway: Problème créé
+Gateway --> Frontend: Confirmation signalement
+Frontend --> Citizen: Affiche "Signalement enregistré"
+
+note right of Gateway
+  Routage dynamique
+  selon type d'incident
+end note
+
+== Scénario 3: Consultation Dashboard ==
+
+Citoyen -> Frontend: Accède Dashboard
+Frontend -> Gateway: GET /dashboard/stats
+Gateway -> Dashboard: GET /stats
+Dashboard -> DB: Agrège données (24h)
+DB --> Dashboard: Statistiques
+Dashboard --> Gateway: Retourne stats
+Gateway --> Frontend: Données JSON
+Frontend -> Frontend: Affiche graphiques et cartes
+
+note left of Dashboard
+  Agrégation horaire
+  Mise à jour auto/min
+end note
+
+== Scénario 4: Alerte Inondation ==
+
+Flood -> Flood: Capteur détecte niveau élevé
+Flood -> DB: Enregistre mesure
+DB --> Flood: Confirmation
+Flood -> Flood: Compare avec seuil
+alt niveau > seuil
+    Flood -> Gateway: POST /alerts/flood
+    Gateway -> Dashboard: Notification alerte
+    Dashboard -> Frontend: WebSocket alert
+    Frontend -> Citizen: Affiche alerte urgente
+end
+
+note right of Flood
+  Surveillance temps réel
+  Seuils dynamiques
+end note
+
+== Scénario 5: Intervention Agent ==
+
+actor "Agent" as AgentM
+AgentM -> Frontend: Connexion
+Frontend -> Gateway: POST /auth/login
+Gateway -> Auth: POST /auth/login
+Auth --> Gateway: Token JWT
+Gateway --> Frontend: Token
+Frontend -> AgentM: Dashboard Agent
+
+AgentM -> Frontend: Consulte interventions assignées
+Frontend -> Gateway: GET /interventions
+Gateway -> Road: GET /interventions
+Road -> DB: Requête interventions
+DB --> Road: Liste interventions
+Road --> Gateway: Données
+Gateway --> Frontend: JSON
+Frontend -> AgentM: Affiche liste
+
+AgentM -> Frontend: Met à jour statut intervention
+Frontend -> Gateway: PUT /interventions/{id}
+Gateway -> Road: PUT /interventions/{id}
+Road -> DB: Mise à jour statut
+DB --> Road: Confirmation
+Road --> Gateway: Succès
+Gateway --> Frontend: Confirmation
+Frontend -> AgentM: Statut mis à jour
+
+note left of AgentM
+  Workflow mobile
+  GPS tracking
+end note
+
+@enduml

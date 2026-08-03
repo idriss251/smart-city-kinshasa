@@ -1,0 +1,197 @@
+@startuml SmartCity_DeploymentDiagram
+
+skinparam componentStyle rectangle
+skinparam rectangle {
+    BackgroundColor #FEFECE
+    BorderColor #E0E000
+}
+
+cloud "Internet" as Internet
+
+node "Navigateur Client" as Client {
+    component "React Frontend" as Frontend
+}
+
+node "Docker Host" as DockerHost {
+    
+    node "Réseau Docker" as DockerNet {
+        
+        component "Nginx (Port 13000)" as Nginx {
+            [Reverse Proxy]
+            [Static Files]
+        }
+        
+        component "API Gateway (Port 18080)" as Gateway {
+            [Spring Cloud Gateway]
+            [Load Balancer]
+            [Security Filter]
+        }
+        
+        component "Eureka Server (Port 18761)" as Eureka {
+            [Service Discovery]
+            [Registry]
+        }
+        
+        component "Redis (Port 63790)" as Redis {
+            [Cache]
+            [Message Broker]
+        }
+        
+        component "RabbitMQ (Port 15673)" as RabbitMQ {
+            [Message Queue]
+            [Event Bus]
+        }
+        
+        component "Mosquitto MQTT" as MQTT {
+            [IoT Gateway]
+            [MQTT Broker]
+        }
+        
+        package "Microservices" as Microservices {
+            
+            component "Auth Service" as AuthService {
+                [Spring Boot]
+                [JWT Auth]
+                [BCrypt]
+            }
+            
+            component "Waste Service" as WasteService {
+                [Spring Boot]
+                [Waste Management]
+            }
+            
+            component "Road Service" as RoadService {
+                [Spring Boot]
+                [Road Monitoring]
+            }
+            
+            component "Flood Service" as FloodService {
+                [Spring Boot]
+                [Flood Monitoring]
+            }
+            
+            component "Dashboard Service" as DashboardService {
+                [Spring Boot]
+                [Statistics]
+                [Analytics]
+            }
+        }
+        
+        package "Bases de Données PostgreSQL" as Databases {
+            
+            database "authdb (Port 55433)" as AuthDB {
+                [users table]
+                [roles table]
+            }
+            
+            database "wastedb (Port 55434)" as WasteDB {
+                [bins table]
+                [collections table]
+                [zones table]
+            }
+            
+            database "roaddb (Port 55435)" as RoadDB {
+                [road_problems table]
+                [interventions table]
+                [roads table]
+            }
+            
+            database "flooddb (Port 55436)" as FloodDB {
+                [flood_zones table]
+                [measures table]
+                [alerts table]
+            }
+            
+            database "dashboarddb (Port 55439)" as DashboardDB {
+                [statistics table]
+                [reports table]
+            }
+        }
+    }
+}
+
+node "Capteurs IoT" as IoT {
+    component "Capteurs Niveau Eau" as WaterSensors
+    component "Capteurs Poubelles" as BinSensors
+    component "Capteurs Routes" as RoadSensors
+}
+
+' Connexions Internet
+Internet --> Client : HTTPS
+Client --> Nginx : HTTP
+
+' Connexions Frontend
+Nginx --> Gateway : /api/*
+
+' Connexions Gateway
+Gateway --> Eureka : Service Discovery
+Gateway --> AuthService : /auth/**
+Gateway --> WasteService : /waste/**
+Gateway --> RoadService : /road/**
+Gateway --> FloodService : /flood/**
+Gateway --> DashboardService : /dashboard/**
+
+' Connexions Microservices
+AuthService --> Eureka : Register
+WasteService --> Eureka : Register
+RoadService --> Eureka : Register
+FloodService --> Eureka : Register
+DashboardService --> Eureka : Register
+
+' Connexions aux bases de données
+AuthService --> AuthDB : JDBC
+WasteService --> WasteDB : JDBC
+RoadService --> RoadDB : JDBC
+FloodService --> FloodDB : JDBC
+DashboardService --> DashboardDB : JDBC
+
+' Connexions Cache et Messagerie
+AuthService --> Redis : Cache sessions
+WasteService --> Redis : Cache données
+RoadService --> Redis : Cache données
+FloodService --> Redis : Cache données
+DashboardService --> Redis : Cache stats
+
+WasteService --> RabbitMQ : Events
+RoadService --> RabbitMQ : Events
+FloodService --> RabbitMQ : Events
+
+' Connexions IoT
+WaterSensors --> MQTT : MQTT Publish
+BinSensors --> MQTT : MQTT Publish
+RoadSensors --> MQTT : MQTT Publish
+MQTT --> FloodService : MQTT Subscribe
+MQTT --> WasteService : MQTT Subscribe
+MQTT --> RoadService : MQTT Subscribe
+
+note right of Client
+  Navigateur Web
+  (Chrome, Firefox, Edge)
+  Accès via localhost:13000
+end note
+
+note left of Gateway
+  Point d'entrée unique
+  Routage dynamique
+  Authentification JWT
+end note
+
+note right of Microservices
+  Architecture Spring Boot
+  Communication REST
+  Service Discovery Eureka
+end note
+
+note bottom of Databases
+  PostgreSQL avec PostGIS
+  Données géospatiales
+  Migrations Flyway
+end note
+
+note left of IoT
+  Capteurs connectés
+  MQTT Protocol
+  Données temps réel
+end note
+
+@enduml

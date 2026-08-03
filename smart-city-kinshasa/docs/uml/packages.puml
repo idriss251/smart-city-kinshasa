@@ -1,0 +1,10 @@
+@startuml
+package backend
+package frontend
+package mobile
+package iot
+package docs
+backend --> docs
+frontend --> backend
+mobile --> backend
+@enduml
