@@ -169,6 +169,70 @@ services:
         value: prod
     region: oregon
 
+  # Better Auth Service
+  - type: web
+    name: smart-city-better-auth-service
+    env: docker
+    dockerContext: ./backend/better-auth-service
+    dockerfilePath: ./backend/better-auth-service/Dockerfile
+    plan: free
+    envVars:
+      - key: DB_HOST
+        fromDatabase:
+          name: smart-city-auth-db
+          property: host
+      - key: DB_PORT
+        fromDatabase:
+          name: smart-city-auth-db
+          property: port
+      - key: DB_NAME
+        fromDatabase:
+          name: smart-city-auth-db
+          property: database
+      - key: DB_USER
+        fromDatabase:
+          name: smart-city-auth-db
+          property: user
+      - key: DB_PASSWORD
+        fromDatabase:
+          name: smart-city-auth-db
+          property: password
+      - key: BETTER_AUTH_SECRET
+        generateValue: true
+      - key: BETTER_AUTH_URL
+        value: https://smart-city-api-gateway.onrender.com/api/betterauth
+      - key: BETTER_AUTH_TRUSTED_ORIGINS
+        value: https://smart-city-frontend.onrender.com
+      - key: PORT
+        value: 8089
+    region: oregon
+
+  # Citizen Service
+  - type: web
+    name: smart-city-citizen-service
+    env: docker
+    dockerContext: ./backend/citizen-service
+    dockerfilePath: ./backend/citizen-service/Dockerfile
+    plan: free
+    envVars:
+      - key: EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE
+        value: http://smart-city-eureka.onrender.com/eureka/
+      - key: SPRING_DATASOURCE_URL
+        fromDatabase:
+          name: smart-city-citizen-db
+          property: uri
+      - key: SPRING_DATASOURCE_USERNAME
+        fromDatabase:
+          name: smart-city-citizen-db
+          property: username
+      - key: SPRING_DATASOURCE_PASSWORD
+        fromDatabase:
+          name: smart-city-citizen-db
+          property: password
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+    region: oregon
+
 databases:
   # Auth Database
   - name: smart-city-auth-db
@@ -201,6 +265,13 @@ databases:
   # Dashboard Database
   - name: smart-city-dashboard-db
     databaseName: dashboarddb
+    user: smartcity
+    plan: free
+    region: oregon
+
+  # Citizen Database
+  - name: smart-city-citizen-db
+    databaseName: citizendb
     user: smartcity
     plan: free
     region: oregon
