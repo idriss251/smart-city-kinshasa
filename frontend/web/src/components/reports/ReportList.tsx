@@ -1,17 +1,86 @@
-import { AlertCircle, PlusCircle } from 'lucide-react';
-import { useState } from 'react';
+import { AlertCircle, Download, PlusCircle, RefreshCw } from 'lucide-react';
+import { useEffect, useMemo, useState } from 'react';
+import { api } from '../../services/api';
 import ReportDetail from './ReportDetail';
 import ReportFilters from './ReportFilters';
 import ReportForm from './ReportForm';
 
-const recentReports = [
-  { id: 1042, title: 'Décharge sauvage', status: 'Urgent', location: 'Makala', time: 'Il y a 2h' },
-  { id: 1039, title: 'Panne d\'éclairage', status: 'En cours', location: 'Gombe', time: 'Il y a 5h' },
-  { id: 1038, title: 'Route déformée', status: 'Résolu', location: 'Ngaliema', time: 'Hier' },
-];
+interface Report {
+  id: number;
+  type: string;
+  description: string;
+  commune: string;
+  status: 'EN_ATTENTE' | 'EN_COURS' | 'RESOLU' | 'URGENT';
+  createdAt: string;
+}
+
+const statusLabel: Record<string, string> = {
+  EN_ATTENTE: 'En attente',
+  EN_COURS: 'En cours',
+  RESOLU: 'Résolu',
+  URGENT: 'Urgent',
+};
+
+const statusClass: Record<string, string> = {
+  EN_ATTENTE: 'bg-amber-100 text-amber-700',
+  EN_COURS: 'bg-sky-100 text-sky-700',
+  RESOLU: 'bg-emerald-100 text-emerald-700',
+  URGENT: 'bg-rose-100 text-rose-700',
+};
 
 export default function ReportList() {
   const [showForm, setShowForm] = useState(false);
+  const [reports, setReports] = useState<Report[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [search, setSearch] = useState('');
+  const [status, setStatus] = useState('');
+
+  const fetchReports = async () => {
+    setLoading(true);
+    try {
+      const r = await api.get('/api/citizen');
+      setReports(Array.isArray(r.data) ? r.data : []);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchReports();
+  }, []);
+
+  const filtered = useMemo(() => {
+    return reports.filter((r) => {
+      const matchesSearch =
+        r.type?.toLowerCase().includes(search.toLowerCase()) ||
+        r.commune?.toLowerCase().includes(search.toLowerCase()) ||
+        r.description?.toLowerCase().includes(search.toLowerCase());
+      const matchesStatus = status ? r.status === status : true;
+      return matchesSearch && matchesStatus;
+    });
+  }, [reports, search, status]);
+
+  const exportCsv = () => {
+    const rows = filtered.map((r) => ({
+      id: r.id,
+      type: r.type,
+      commune: r.commune,
+      status: statusLabel[r.status] || r.status,
+      date: new Date(r.createdAt).toLocaleDateString('fr-FR'),
+    }));
+    const headers = ['id,type,commune,status,date'];
+    const lines = rows.map((row) => `${row.id},${row.type},${row.commune},${row.status},${row.date}`);
+    const csv = [...headers, ...lines].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'signalements-kinshasa.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   return (
     <div className='space-y-4'>
@@ -29,21 +98,45 @@ export default function ReportList() {
         </button>
       </div>
 
-      <ReportFilters />
+      <ReportFilters search={search} setSearch={setSearch} status={status} setStatus={setStatus} />
+
+      <div className='panel flex items-center justify-between'>
+        <div className='text-sm text-slate-600'>{filtered.length} signalement(s)</div>
+        <div className='flex gap-2'>
+          <button
+            onClick={fetchReports}
+            disabled={loading}
+            className='flex items-center gap-2 rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50'
+          >
+            <RefreshCw size={16} className={loading ? 'animate-spin' : ''} />
+            Actualiser
+          </button>
+          <button
+            onClick={exportCsv}
+            className='flex items-center gap-2 rounded-2xl bg-teal-600 px-3 py-2 text-sm font-semibold text-white hover:bg-teal-700'
+          >
+            <Download size={16} />
+            CSV
+          </button>
+        </div>
+      </div>
 
       <div className='grid gap-4 xl:grid-cols-[1.2fr_0.8fr]'>
         <div className='space-y-3'>
-          {recentReports.map((report) => (
+          {filtered.map((report) => (
             <div key={report.id} className='panel flex items-center justify-between gap-4'>
               <div>
-                <div className='text-sm font-semibold text-slate-900'>{report.title}</div>
-                <div className='mt-1 text-sm text-slate-500'>#{report.id} • {report.location} • {report.time}</div>
+                <div className='text-sm font-semibold text-slate-900'>{report.type}</div>
+                <div className='mt-1 text-sm text-slate-500'>#{report.id} • {report.commune} • {new Date(report.createdAt).toLocaleDateString('fr-FR')}</div>
               </div>
-              <span className={`rounded-full px-3 py-1 text-sm font-semibold ${report.status === 'Urgent' ? 'bg-amber-100 text-amber-700' : report.status === 'En cours' ? 'bg-sky-100 text-sky-700' : 'bg-emerald-100 text-emerald-700'}`}>
-                {report.status}
+              <span className={`rounded-full px-3 py-1 text-sm font-semibold ${statusClass[report.status] || 'bg-slate-100 text-slate-700'}`}>
+                {statusLabel[report.status] || report.status}
               </span>
             </div>
           ))}
+          {filtered.length === 0 && (
+            <div className='panel text-center text-slate-500'>Aucun signalement trouvé.</div>
+          )}
         </div>
 
         <div className='space-y-3'>

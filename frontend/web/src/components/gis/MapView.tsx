@@ -1,1 +1,2 @@
-import BinMap from '../waste/BinMap'; export default function MapView(){return <BinMap/>}
+import ReportsMap from './ReportsMap';
+export default function MapView() { return <ReportsMap />; }

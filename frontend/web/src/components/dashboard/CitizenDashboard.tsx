@@ -180,6 +180,31 @@ export default function CitizenDashboard() {
           </div>
         </div>
 
+        <div className="panel border-l-4 border-l-rose-500">
+          <div className="mb-3 flex items-center gap-2">
+            <BellRing size={18} className="text-rose-600" />
+            <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Numéros d'urgence</h3>
+          </div>
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <a href="tel:112" className="rounded-2xl bg-rose-50 p-3 text-center transition hover:bg-rose-100 dark:bg-rose-900/20 dark:hover:bg-rose-900/30">
+              <div className="text-lg font-bold text-rose-700">112</div>
+              <div className="text-xs text-slate-600 dark:text-slate-300">Police secours</div>
+            </a>
+            <a href="tel:118" className="rounded-2xl bg-rose-50 p-3 text-center transition hover:bg-rose-100 dark:bg-rose-900/20 dark:hover:bg-rose-900/30">
+              <div className="text-lg font-bold text-rose-700">118</div>
+              <div className="text-xs text-slate-600 dark:text-slate-300">Pompiers</div>
+            </a>
+            <a href="tel:113" className="rounded-2xl bg-rose-50 p-3 text-center transition hover:bg-rose-100 dark:bg-rose-900/20 dark:hover:bg-rose-900/30">
+              <div className="text-lg font-bold text-rose-700">113</div>
+              <div className="text-xs text-slate-600 dark:text-slate-300">SAMU</div>
+            </a>
+            <a href="tel:110" className="rounded-2xl bg-rose-50 p-3 text-center transition hover:bg-rose-100 dark:bg-rose-900/20 dark:hover:bg-rose-900/30">
+              <div className="text-lg font-bold text-rose-700">110</div>
+              <div className="text-xs text-slate-600 dark:text-slate-300">Général</div>
+            </a>
+          </div>
+        </div>
+
         <div className="panel">
           <div className="mb-4 flex items-center justify-between">
             <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Informations utiles</h3>
@@ -195,6 +220,12 @@ export default function CitizenDashboard() {
               <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">Suivi en temps réel</div>
               <div className="mt-1 text-sm text-slate-600 dark:text-slate-400">
                 Consultez l'état de vos signalements à tout moment. Vous recevrez des notifications lors des mises à jour.
+              </div>
+            </div>
+            <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/70">
+              <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">Transparence</div>
+              <div className="mt-1 text-sm text-slate-600 dark:text-slate-400">
+                Les signalements sont publiés de manière anonymisée. Téléchargez les données ouvertes en CSV depuis la page Signalements.
               </div>
             </div>
           </div>

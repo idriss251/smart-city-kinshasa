@@ -15,13 +15,40 @@ export default function ReportForm({ onClose, onSuccess }: ReportFormProps) {
     location: string;
     commune: string;
     photoUrl: string;
+    latitude: number;
+    longitude: number;
   }>({
     type: 'AUTRE',
     description: '',
     location: '',
     commune: '',
-    photoUrl: ''
+    photoUrl: '',
+    latitude: 0,
+    longitude: 0
   });
+  const [geoLoading, setGeoLoading] = useState(false);
+
+  const captureLocation = () => {
+    if (!navigator.geolocation) {
+      alert('Géolocalisation non supportée par ce navigateur.');
+      return;
+    }
+    setGeoLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        setFormData({
+          ...formData,
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
+        });
+        setGeoLoading(false);
+      },
+      () => {
+        alert('Impossible de récupérer la position. Vérifiez les permissions.');
+        setGeoLoading(false);
+      }
+    );
+  };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -48,8 +75,8 @@ export default function ReportForm({ onClose, onSuccess }: ReportFormProps) {
         type: formData.type,
         description: formData.description,
         commune: formData.commune,
-        latitude: 0.0,
-        longitude: 0.0,
+        latitude: formData.latitude || 0.0,
+        longitude: formData.longitude || 0.0,
         citizenId: 1,
         photoUrl: formData.photoUrl || undefined
       };
@@ -91,7 +118,13 @@ export default function ReportForm({ onClose, onSuccess }: ReportFormProps) {
               <option value="DECHET">Déchets / Propreté</option>
               <option value="ROUTE">Problème routier</option>
               <option value="INONDATION">Inondation</option>
-              <option value="ECLAIRAGE">Éclairage</option>
+              <option value="ECLAIRAGE">Éclairage public</option>
+              <option value="EAU">Eau / Adduction</option>
+              <option value="ELECTRICITE">Électricité / SNEL</option>
+              <option value="SECURITE">Sécurité / Incivilité</option>
+              <option value="SANTE">Santé / Urgence</option>
+              <option value="INCENDIE">Incendie</option>
+              <option value="TRANSPORT">Transport en commun</option>
             </select>
           </div>
 
@@ -115,6 +148,22 @@ export default function ReportForm({ onClose, onSuccess }: ReportFormProps) {
               onChange={(e) => setFormData({ ...formData, location: e.target.value })}
               required
             />
+          </div>
+
+          <div>
+            <label className="mb-1.5 block text-sm font-medium text-slate-700">Position GPS</label>
+            <button
+              type="button"
+              onClick={captureLocation}
+              disabled={geoLoading}
+              className="btn w-full border border-slate-300 bg-slate-100 text-slate-700 hover:bg-slate-200"
+            >
+              {geoLoading
+                ? 'Récupération...'
+                : formData.latitude
+                  ? `Lat: ${formData.latitude.toFixed(5)}, Lng: ${formData.longitude.toFixed(5)}`
+                  : 'Obtenir ma position GPS'}
+            </button>
           </div>
 
           <div>
