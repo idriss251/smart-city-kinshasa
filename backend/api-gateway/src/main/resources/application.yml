@@ -7,6 +7,8 @@ spring:
           '[/**]': { allowedOrigins: "*", allowedMethods: "*", allowedHeaders: "*" }
       routes:
         - { id: auth, uri: lb://auth-service, predicates: [Path=/api/auth/**] }
+        - { id: users, uri: lb://auth-service, predicates: [Path=/api/users/**] }
+        - { id: betterauth, uri: http://better-auth-service:8089, predicates: [Path=/api/betterauth/**] }
         - { id: waste, uri: lb://waste-service, predicates: [Path=/api/waste/**] }
         - { id: road, uri: lb://road-service, predicates: [Path=/api/road/**] }
         - { id: flood, uri: lb://flood-service, predicates: [Path=/api/flood/**] }

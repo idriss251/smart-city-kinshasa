@@ -1,9 +1,11 @@
 @startuml SmartCity_ActivityDiagram
 
 skinparam activity {
-  BackgroundColor #F0F0F0
+  BackgroundColor #FEFECE
   BorderColor #000000
+  ArrowColor #000000
 }
+skinparam shadowing false
 
 start
 
@@ -17,7 +19,7 @@ else (oui)
 endif
 
 fork
-  :Processus Signalement Citoyen;
+  :Signalement Citoyen;
   
   :Citoyen clique "Signaler";
   :Formulaire s'affiche;
@@ -39,7 +41,7 @@ fork
   :Notifier agents concernés;
   
 fork again
-  :Processus Intervention Agent;
+  :Intervention Agent;
   
   :Agent consulte tableau de bord;
   :Liste interventions assignées;
@@ -57,19 +59,19 @@ fork again
   endif
   
 fork again
-  :Processus Surveillance Inondations;
+  :Surveillance Inondations;
   
   :Capteurs IoT mesurent niveau;
   :Transmettre données à Flood Service;
   
-  if (Niveau > seuil critique?) then (oui)
+  if (Niveau > seuil critique?) then (critique)
     :Générer alerte urgente;
     :Notifier citoyens zone;
     :Déployer équipes secours;
-  elseif (Niveau > seuil warning?) then (oui)
+  elseif (Niveau > seuil warning?) then (warning)
     :Générer alerte modérée;
     :Surveillance renforcée;
-  else (non)
+  else (normal)
     :Surveillance normale;
   endif
   
@@ -77,17 +79,17 @@ fork again
   :Calculer tendance;
   
 fork again
-  :Processus Collecte Déchets;
+  :Collecte Déchets;
   
   :Surveiller niveau poubelles;
   
-  if (Niveau > 90%?) then (oui)
+  if (Niveau > 90%?) then (critique)
     :Marquer comme critique;
     :Planifier collecte urgente;
-  elseif (Niveau > 70%) then (oui)
+  elseif (Niveau > 70%) then (warning)
     :Marquer comme warning;
     :Planifier collecte prochaine;
-  else (non)
+  else (normal)
     :Statut normal;
   endif
   
@@ -97,14 +99,14 @@ fork again
   :Calculer statistiques quotidiennes;
   
 fork again
-  :Processus Dashboard Temps Réel;
+  :Dashboard Temps Réel;
   
   :Agréger données services;
   :Calculer statistiques 24h;
   :Générer graphiques;
   :Mettre à jour cartes;
   
-  repeat every minute
+  repeat
     :Rafraîchir données;
   repeat while (Système actif)
   
@@ -119,22 +121,25 @@ endif
 
 stop
 
-note right of "Processus Surveillance Inondations"
-  Surveillance continue
-  Capteurs IoT
-  Alertes automatiques
+note
+  Surveillance Inondations :
+  - Surveillance continue
+  - Capteurs IoT
+  - Alertes automatiques
 end note
 
-note left of "Processus Collecte Déchets"
-  Optimisation tournées
-  Prévision volumes
-  Réduction coûts
+note
+  Collecte Déchets :
+  - Optimisation tournées
+  - Prévision volumes
+  - Réduction coûts
 end note
 
-note bottom of "Processus Dashboard Temps Réel"
-  Mise à jour automatique
-  Données horaires
-  Visualisation interactive
+note
+  Dashboard Temps Réel :
+  - Mise à jour automatique
+  - Données horaires
+  - Visualisation interactive
 end note
 
 @enduml

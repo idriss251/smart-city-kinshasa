@@ -5,193 +5,229 @@ skinparam rectangle {
     BackgroundColor #FEFECE
     BorderColor #E0E000
 }
+skinparam databaseBackgroundColor #FEFECE
+skinparam databaseBorderColor #E0E000
+skinparam linetype ortho
+skinparam shadowing false
 
 cloud "Internet" as Internet
 
 node "Navigateur Client" as Client {
-    component "React Frontend" as Frontend
+    component "React Frontend\nPort: 3000" as Frontend
 }
 
-node "Docker Host" as DockerHost {
+node "Docker Host (Windows)" as DockerHost {
     
-    node "Réseau Docker" as DockerNet {
+    node "Réseau Docker Bridge" as DockerNet {
         
-        component "Nginx (Port 13000)" as Nginx {
+        component "Nginx\nPort: 13000" as Nginx {
             [Reverse Proxy]
             [Static Files]
+            [SSL Termination]
         }
         
-        component "API Gateway (Port 18080)" as Gateway {
+        component "API Gateway\nPort: 18080" as Gateway {
             [Spring Cloud Gateway]
             [Load Balancer]
             [Security Filter]
+            [Rate Limiting]
         }
         
-        component "Eureka Server (Port 18761)" as Eureka {
+        component "Eureka Server\nPort: 18761" as Eureka {
             [Service Discovery]
-            [Registry]
+            [Service Registry]
+            [Health Checks]
         }
         
-        component "Redis (Port 63790)" as Redis {
-            [Cache]
-            [Message Broker]
+        component "Redis\nPort: 63790" as Redis {
+            [Cache Layer]
+            [Session Storage]
+            [Rate Limiting]
         }
         
-        component "RabbitMQ (Port 15673)" as RabbitMQ {
+        component "RabbitMQ\nPort: 15673" as RabbitMQ {
             [Message Queue]
             [Event Bus]
+            [Dead Letter Queue]
         }
         
-        component "Mosquitto MQTT" as MQTT {
+        component "Mosquitto MQTT\nPort: 1883" as MQTT {
             [IoT Gateway]
             [MQTT Broker]
+            [WebSocket Support]
         }
         
-        package "Microservices" as Microservices {
+        package "Microservices Spring Boot" as Microservices {
             
-            component "Auth Service" as AuthService {
-                [Spring Boot]
+            component "Auth Service\nPort: 18081" as AuthService {
+                [Spring Boot 3.x]
                 [JWT Auth]
                 [BCrypt]
+                [OAuth2]
             }
             
-            component "Waste Service" as WasteService {
-                [Spring Boot]
-                [Waste Management]
+            component "Waste Service\nPort: 18082" as WasteService {
+                [Spring Boot 3.x]
+                [Waste Mgmt]
+                [Bin Monitor]
+                [Collection]
             }
             
-            component "Road Service" as RoadService {
-                [Spring Boot]
-                [Road Monitoring]
+            component "Road Service\nPort: 18083" as RoadService {
+                [Spring Boot 3.x]
+                [Road Monitor]
+                [Issue Track]
+                [Intervention]
             }
             
-            component "Flood Service" as FloodService {
-                [Spring Boot]
-                [Flood Monitoring]
+            component "Flood Service\nPort: 18084" as FloodService {
+                [Spring Boot 3.x]
+                [Flood Monitor]
+                [Sensor IoT]
+                [Alert Gen]
             }
             
-            component "Dashboard Service" as DashboardService {
-                [Spring Boot]
+            component "Dashboard Service\nPort: 18085" as DashboardService {
+                [Spring Boot 3.x]
                 [Statistics]
                 [Analytics]
+                [Reports]
             }
         }
         
-        package "Bases de Données PostgreSQL" as Databases {
+        package "Bases de Données\nPostgreSQL 15" as Databases {
             
-            database "authdb (Port 55433)" as AuthDB {
-                [users table]
-                [roles table]
+            database "authdb\nPort: 55433" as AuthDB {
+                [users]
+                [roles]
+                [permissions]
             }
             
-            database "wastedb (Port 55434)" as WasteDB {
-                [bins table]
-                [collections table]
-                [zones table]
+            database "wastedb\nPort: 55434" as WasteDB {
+                [bins]
+                [collections]
+                [zones]
+                [schedules]
             }
             
-            database "roaddb (Port 55435)" as RoadDB {
-                [road_problems table]
-                [interventions table]
-                [roads table]
+            database "roaddb\nPort: 55435" as RoadDB {
+                [road_problems]
+                [interventions]
+                [roads]
+                [agents]
             }
             
-            database "flooddb (Port 55436)" as FloodDB {
-                [flood_zones table]
-                [measures table]
-                [alerts table]
+            database "flooddb\nPort: 55436" as FloodDB {
+                [flood_zones]
+                [measures]
+                [alerts]
+                [sensors]
             }
             
-            database "dashboarddb (Port 55439)" as DashboardDB {
-                [statistics table]
-                [reports table]
+            database "dashboarddb\nPort: 55439" as DashboardDB {
+                [statistics]
+                [reports]
+                [aggregations]
             }
         }
     }
 }
 
-node "Capteurs IoT" as IoT {
-    component "Capteurs Niveau Eau" as WaterSensors
+node "Réseau Capteurs IoT" as IoT {
+    component "Capteurs Eau" as WaterSensors
     component "Capteurs Poubelles" as BinSensors
     component "Capteurs Routes" as RoadSensors
 }
 
-' Connexions Internet
-Internet --> Client : HTTPS
-Client --> Nginx : HTTP
+' Flux principal (lignes pleines)
+Internet --> Client : HTTPS (443)
+Client --> Nginx : HTTP (13000)
+Nginx --> Gateway : /api/* (18080)
 
-' Connexions Frontend
-Nginx --> Gateway : /api/*
+' Service Discovery (lignes pointillées)
+Gateway ..> Eureka : Discovery (18761)
+AuthService ..> Eureka : Register (18761)
+WasteService ..> Eureka : Register (18761)
+RoadService ..> Eureka : Register (18761)
+FloodService ..> Eureka : Register (18761)
+DashboardService ..> Eureka : Register (18761)
 
-' Connexions Gateway
-Gateway --> Eureka : Service Discovery
-Gateway --> AuthService : /auth/**
-Gateway --> WasteService : /waste/**
-Gateway --> RoadService : /road/**
-Gateway --> FloodService : /flood/**
-Gateway --> DashboardService : /dashboard/**
+' Routing Gateway
+Gateway -down-> AuthService : /auth/**
+Gateway -down-> WasteService : /waste/**
+Gateway -down-> RoadService : /road/**
+Gateway -down-> FloodService : /flood/**
+Gateway -down-> DashboardService : /dashboard/**
 
-' Connexions Microservices
-AuthService --> Eureka : Register
-WasteService --> Eureka : Register
-RoadService --> Eureka : Register
-FloodService --> Eureka : Register
-DashboardService --> Eureka : Register
+' Connexions aux bases de données (lignes en tirets)
+AuthService -down-> AuthDB : JDBC (55433)
+WasteService -down-> WasteDB : JDBC (55434)
+RoadService -down-> RoadDB : JDBC (55435)
+FloodService -down-> FloodDB : JDBC (55436)
+DashboardService -down-> DashboardDB : JDBC (55439)
 
-' Connexions aux bases de données
-AuthService --> AuthDB : JDBC
-WasteService --> WasteDB : JDBC
-RoadService --> RoadDB : JDBC
-FloodService --> FloodDB : JDBC
-DashboardService --> DashboardDB : JDBC
+' Cache et Messaging (lignes doubles)
+AuthService => Redis : Sessions (63790)
+WasteService => Redis : Cache (63790)
+RoadService => Redis : Cache (63790)
+FloodService => Redis : Cache (63790)
+DashboardService => Redis : Stats (63790)
 
-' Connexions Cache et Messagerie
-AuthService --> Redis : Cache sessions
-WasteService --> Redis : Cache données
-RoadService --> Redis : Cache données
-FloodService --> Redis : Cache données
-DashboardService --> Redis : Cache stats
+WasteService => RabbitMQ : Events (15673)
+RoadService => RabbitMQ : Events (15673)
+FloodService => RabbitMQ : Events (15673)
+DashboardService => RabbitMQ : Events (15673)
 
-WasteService --> RabbitMQ : Events
-RoadService --> RabbitMQ : Events
-FloodService --> RabbitMQ : Events
-
-' Connexions IoT
-WaterSensors --> MQTT : MQTT Publish
-BinSensors --> MQTT : MQTT Publish
-RoadSensors --> MQTT : MQTT Publish
-MQTT --> FloodService : MQTT Subscribe
-MQTT --> WasteService : MQTT Subscribe
-MQTT --> RoadService : MQTT Subscribe
+' IoT Connections (lignes épaisses)
+WaterSensors == MQTT : MQTT (1883)
+BinSensors == MQTT : MQTT (1883)
+RoadSensors == MQTT : MQTT (1883)
+MQTT == FloodService : Subscribe
+MQTT == WasteService : Subscribe
+MQTT == RoadService : Subscribe
 
 note right of Client
   Navigateur Web
-  (Chrome, Firefox, Edge)
-  Accès via localhost:13000
+  Chrome/Firefox/Edge
+  Accès: localhost:13000
+  WebSocket Support
 end note
 
 note left of Gateway
-  Point d'entrée unique
-  Routage dynamique
-  Authentification JWT
+  API Gateway Central
+  Spring Cloud Gateway
+  JWT Validation
+  Rate Limiting
+  CORS Configuration
 end note
 
 note right of Microservices
-  Architecture Spring Boot
+  Microservices Spring Boot 3.x
   Communication REST
   Service Discovery Eureka
+  Health Checks Actuator
+  OpenAPI Documentation
 end note
 
 note bottom of Databases
-  PostgreSQL avec PostGIS
+  PostgreSQL 15 + PostGIS
   Données géospatiales
   Migrations Flyway
+  Connection Pooling HikariCP
 end note
 
 note left of IoT
-  Capteurs connectés
-  MQTT Protocol
+  Réseau Capteurs IoT
+  MQTT Protocol (1883)
   Données temps réel
+  Chiffrement TLS
+end note
+
+note top of DockerNet
+  Docker Network: bridge
+  Container Orchestration
+  Port Mapping Config
+  Environment Variables
 end note
 
 @enduml

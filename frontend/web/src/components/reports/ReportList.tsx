@@ -1,14 +1,18 @@
 import { AlertCircle, PlusCircle } from 'lucide-react';
+import { useState } from 'react';
 import ReportDetail from './ReportDetail';
 import ReportFilters from './ReportFilters';
+import ReportForm from './ReportForm';
 
 const recentReports = [
   { id: 1042, title: 'Décharge sauvage', status: 'Urgent', location: 'Makala', time: 'Il y a 2h' },
-  { id: 1039, title: 'Panne d’éclairage', status: 'En cours', location: 'Gombe', time: 'Il y a 5h' },
+  { id: 1039, title: 'Panne d\'éclairage', status: 'En cours', location: 'Gombe', time: 'Il y a 5h' },
   { id: 1038, title: 'Route déformée', status: 'Résolu', location: 'Ngaliema', time: 'Hier' },
 ];
 
 export default function ReportList() {
+  const [showForm, setShowForm] = useState(false);
+
   return (
     <div className='space-y-4'>
       <div className='flex flex-col gap-3 rounded-3xl border border-teal-100 bg-gradient-to-r from-teal-600 to-cyan-500 p-5 text-white shadow-lg md:flex-row md:items-center md:justify-between'>
@@ -16,7 +20,10 @@ export default function ReportList() {
           <div className='text-sm font-semibold uppercase tracking-[0.3em] text-teal-100'>Signalements citoyens</div>
           <h2 className='mt-1 text-2xl font-semibold'>Suivi des incidents et demandes de service</h2>
         </div>
-        <button className='flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-teal-700 shadow-sm'>
+        <button 
+          onClick={() => setShowForm(true)}
+          className='flex items-center gap-2 rounded-full bg-white px-4 py-2 text-sm font-semibold text-teal-700 shadow-sm hover:bg-teal-50'
+        >
           <PlusCircle size={16} />
           Nouveau signalement
         </button>
@@ -50,6 +57,15 @@ export default function ReportList() {
           <ReportDetail />
         </div>
       </div>
+
+      {showForm && (
+        <ReportForm 
+          onClose={() => setShowForm(false)} 
+          onSuccess={() => {
+            // Refresh reports could be added here
+          }}
+        />
+      )}
     </div>
   );
 }

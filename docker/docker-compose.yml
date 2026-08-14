@@ -79,6 +79,19 @@ services:
     build: ../backend/dashboard-service
     environment: { EUREKA_URL: http://eureka-server:8761/eureka/ }
     depends_on: [eureka-server]
+  better-auth-service:
+    build: ../backend/better-auth-service
+    environment:
+      DB_HOST: auth-db
+      DB_PORT: 5432
+      DB_NAME: authdb
+      DB_USER: smartcity
+      DB_PASSWORD: smartcity
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:-change-me-in-production}
+      BETTER_AUTH_URL: http://api-gateway:8080/api/betterauth
+      BETTER_AUTH_TRUSTED_ORIGINS: http://localhost:13000
+      PORT: 8089
+    depends_on: [auth-db, api-gateway]
   frontend:
     build: ../frontend/web
     ports: ["${FRONTEND_PORT:-13000}:80"]

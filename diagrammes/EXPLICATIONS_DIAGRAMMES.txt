@@ -1,0 +1,380 @@
+================================================================================
+SMART CITY KINSHASA - EXPLICATIONS DES DIAGRAMMES
+================================================================================
+
+Ce document contient des explications détaillées pour chaque diagramme du
+projet Smart City Kinshasa. Ces explications peuvent être utilisées comme
+légendes ou descriptions sous chaque diagramme.
+
+================================================================================
+1. DIAGRAMME D'ACTIVITÉ (activity_diagram.puml)
+================================================================================
+
+DESCRIPTION GÉNÉRALE :
+Le diagramme d'activité représente les flux de travail et les processus
+parallèles au sein du système Smart City Kinshasa. Il montre comment les
+différents acteurs interagissent avec le système et entre eux.
+
+PROCESSUS PRINCIPAUX :
+
+1. PROCESSUS DE CONNEXION UTILISATEUR
+   - Authentification via nom d'utilisateur/mot de passe
+   - Si échec : affichage d'erreur et arrêt
+   - Si succès : affichage du dashboard principal
+
+2. PROCESSUS DE SIGNALEMENT CITOYEN (Parallèle)
+   - Le citoyen clique sur "Signaler"
+   - Formulaire d'incident s'affiche
+   - Remplissage du formulaire (type, description, localisation)
+   - Routage selon le type d'incident :
+     * Déchets → Waste Service
+     * Routes → Road Service  
+     * Inondations → Flood Service
+   - Enregistrement en base de données
+   - Confirmation envoyée au citoyen
+   - Notification des agents concernés
+
+3. PROCESSUS D'INTERVENTION AGENT (Parallèle)
+   - L'agent consulte son tableau de bord
+   - Liste des interventions assignées
+   - Si intervention urgente :
+     * Priorisation immédiate
+     * Déplacement sur site
+     * Évaluation de la situation
+     * Exécution de l'intervention
+     * Mise à jour du statut
+     * Génération de rapport
+   - Sinon :
+     * Planification de l'intervention
+     * Attente de créneau disponible
+
+4. PROCESSUS DE SURVEILLANCE INONDATIONS (Parallèle)
+   - Capteurs IoT mesurent le niveau d'eau en continu
+   - Transmission des données au Flood Service
+   - Analyse selon les seuils :
+     * Niveau > seuil critique : Alerte urgente, notification citoyens, déploiement équipes
+     * Niveau > seuil warning : Alerte modérée, surveillance renforcée
+     * Niveau normal : Surveillance normale
+   - Enregistrement des mesures historiques
+   - Calcul des tendances
+
+5. PROCESSUS DE COLLECTE DÉCHETS (Parallèle)
+   - Surveillance continue du niveau des poubelles
+   - Analyse selon le remplissage :
+     * Niveau > 90% : Marqué critique, collecte urgente planifiée
+     * Niveau > 70% : Marqué warning, collecte prochaine planifiée
+     * Niveau normal : Statut normal
+   - L'agent effectue la collecte
+   - Enregistrement du volume collecté
+   - Mise à jour du niveau de la poubelle
+   - Calcul des statistiques quotidiennes
+
+6. PROCESSUS DASHBOARD TEMPS RÉEL (Parallèle)
+   - Agrégation des données de tous les services
+   - Calcul des statistiques sur 24h
+   - Génération des graphiques
+   - Mise à jour des cartes
+   - Rafraîchissement automatique chaque minute
+   - Boucle continue tant que le système est actif
+
+POINTS CLÉS :
+- Tous les processus s'exécutent en parallèle après la connexion
+- Le système est événementiel et réactif
+- Intégration IoT pour surveillance en temps réel
+- Workflow coordonné entre citoyens et agents
+
+================================================================================
+2. DIAGRAMME DE CLASSE (class_diagram.puml)
+================================================================================
+
+DESCRIPTION GÉNÉRALE :
+Le diagramme de classe représente la structure statique du système avec les
+entités principales, leurs attributs, méthodes et relations.
+
+HIÉRARCHIE D'UTILISATEURS :
+
+Classe abstraite : Utilisateur
+- Attributs : id, username, email, password_hash, role, commune, created_at, updated_at
+- Méthodes : authenticate(), updateProfile()
+
+Sous-classes :
+- Admin : manageUsers(), viewStatistics(), configureSystem()
+- Agent : handleInterventions(), updateStatus(), viewAssignedTasks()
+- Citoyen : reportIncident(), viewDashboard(), trackStatus()
+
+MODULE DÉCHETS :
+- Poubelle : niveau_remplissage, statut, derniere_collecte, volume_quotidien
+- Collecte : date_collecte, volume, agent_id
+- ZoneDechets : capacité, volume_quotidien
+
+MODULE ROUTES :
+- ProblemeRoutier : type, gravite, statut, impact_trafic
+- Intervention : resultat, date_intervention
+- Route : etat, description
+
+MODULE INONDATIONS :
+- ZoneInondable : niveau_actuel, seuil_alerte, tendance, niveau_risque
+- Mesure : timestamp, niveau
+- Alerte : niveau, statut
+
+MODULE SIGNALEMENTS :
+- Signalement : type, description, localisation, statut
+- Rapport : contenu, date_generation
+
+RELATIONS :
+- Héritage : Utilisateur → Admin, Agent, Citoyen
+- Associations : Services liés par ID (Agent effectue Collecte, etc.)
+- Dépendances : Signalement peut créer ProblemeRoutier, ZoneInondable, Poubelle
+
+POINTS CLÉS :
+- Architecture orientée objets
+- Séparation claire des modules fonctionnels
+- Relations bien définies entre entités
+- Support des rôles utilisateurs
+
+================================================================================
+3. DIAGRAMME DE DÉPLOIEMENT (deployment_diagram.puml)
+================================================================================
+
+DESCRIPTION GÉNÉRALE :
+Le diagramme de déploiement montre l'architecture physique et technique
+du système, avec les composants, leurs emplacements et les connexions.
+
+ARCHITECTURE EN COUCHES :
+
+1. COUCHE CLIENT
+   - Navigateur Web (Chrome, Firefox, Edge)
+   - Accès via localhost:13000
+   - React Frontend (Port 3000)
+
+2. COUCHE PASSERELLE
+   - Nginx (Port 13000) : Reverse Proxy, Static Files, SSL Termination
+   - API Gateway (Port 18080) : Spring Cloud Gateway, Load Balancer, Security
+   - Eureka Server (Port 18761) : Service Discovery, Registry
+
+3. COUCHE INFRASTRUCTURE
+   - Redis (Port 63790) : Cache, Session Storage, Rate Limiting
+   - RabbitMQ (Port 15673) : Message Queue, Event Bus, Dead Letter Queue
+   - Mosquitto MQTT (Port 1883) : IoT Gateway, MQTT Broker
+
+4. COUCHE MICROSERVICES
+   - Auth Service (Port 18081) : JWT Auth, BCrypt, OAuth2
+   - Waste Service (Port 18082) : Waste Management, Bin Monitoring
+   - Road Service (Port 18083) : Road Monitoring, Issue Tracking
+   - Flood Service (Port 18084) : Flood Monitoring, Sensor Integration
+   - Dashboard Service (Port 18085) : Statistics, Analytics
+
+5. COUCHE DONNÉES
+   - PostgreSQL 15 avec PostGIS
+   - Bases séparées par service :
+     * authdb (55433) : users, roles, permissions
+     * wastedb (55434) : bins, collections, zones, schedules
+     * roaddb (55435) : road_problems, interventions, roads, agents
+     * flooddb (55436) : flood_zones, measures, alerts, sensors
+     * dashboarddb (55439) : statistics, reports, aggregations
+
+6. COUCHE IOT
+   - Capteurs Niveau Eau
+   - Capteurs Poubelles
+   - Capteurs Routes
+   - Protocole MQTT pour communication
+
+FLUX DE DONNÉES :
+- Client → Nginx → API Gateway → Microservices
+- Microservices → Eureka (enregistrement)
+- Microservices → Bases de données (JDBC)
+- Microservices → Redis (cache)
+- Microservices → RabbitMQ (events)
+- Capteurs IoT → MQTT → Microservices
+
+POINTS CLÉS :
+- Architecture microservices Spring Boot
+- Communication REST via API Gateway
+- Service Discovery avec Eureka
+- Support temps réel avec MQTT
+- Cache distribué avec Redis
+- Message Queue avec RabbitMQ
+- Données géospatiales avec PostGIS
+
+================================================================================
+4. DIAGRAMME DE SÉQUENCE (sequence_diagram.puml)
+================================================================================
+
+DESCRIPTION GÉNÉRALE :
+Le diagramme de séquence montre les interactions entre les composants
+dans différents scénarios d'utilisation.
+
+SCÉNARIO 1 : CONNEXION UTILISATEUR
+1. Citoyen saisit identifiants dans le Frontend
+2. Frontend → API Gateway : POST /auth/login
+3. API Gateway → Auth Service : POST /auth/login
+4. Auth Service → PostgreSQL : Vérifie utilisateur
+5. PostgreSQL → Auth Service : Retourne utilisateur
+6. Auth Service : Vérifie mot de passe (BCrypt)
+7. Auth Service → API Gateway : Retourne token JWT
+8. API Gateway → Frontend : Retourne token JWT
+9. Frontend : Stocke token (localStorage)
+10. Frontend → Citoyen : Redirige vers Dashboard
+
+SCÉNARIO 2 : SIGNALEMENT D'INCIDENT
+1. Citoyen clique "Signaler incident" dans Frontend
+2. Frontend affiche formulaire
+3. Citoyen remplit formulaire (type, description, localisation)
+4. Frontend → API Gateway : POST /reports (avec token)
+5. API Gateway → Road Service : POST /road/problems (si type = route)
+6. Road Service → PostgreSQL : Enregistre problème
+7. PostgreSQL → Road Service : Confirmation
+8. Road Service → API Gateway : Problème créé
+9. API Gateway → Frontend : Confirmation signalement
+10. Frontend → Citoyen : Affiche "Signalement enregistré"
+
+SCÉNARIO 3 : CONSULTATION DASHBOARD
+1. Citoyen accède Dashboard dans Frontend
+2. Frontend → API Gateway : GET /dashboard/stats
+3. API Gateway → Dashboard Service : GET /stats
+4. Dashboard Service → PostgreSQL : Agrège données (24h)
+5. PostgreSQL → Dashboard Service : Statistiques
+6. Dashboard Service → API Gateway : Retourne stats
+7. API Gateway → Frontend : Données JSON
+8. Frontend : Affiche graphiques et cartes
+
+SCÉNARIO 4 : ALERTE INONDATION
+1. Flood Service : Capteur détecte niveau élevé
+2. Flood Service → PostgreSQL : Enregistre mesure
+3. PostgreSQL → Flood Service : Confirmation
+4. Flood Service : Compare avec seuil
+5. Si niveau > seuil :
+   - Flood Service → API Gateway : POST /alerts/flood
+   - API Gateway → Dashboard Service : Notification alerte
+   - Dashboard Service → Frontend : WebSocket alert
+   - Frontend → Citoyen : Affiche alerte urgente
+
+SCÉNARIO 5 : INTERVENTION AGENT
+1. Agent se connecte dans Frontend
+2. Frontend → API Gateway : POST /auth/login
+3. API Gateway → Auth Service : POST /auth/login
+4. Auth Service → API Gateway : Token JWT
+5. API Gateway → Frontend : Token
+6. Frontend → Agent : Dashboard Agent
+7. Agent consulte interventions assignées
+8. Frontend → API Gateway : GET /interventions
+9. API Gateway → Road Service : GET /interventions
+10. Road Service → PostgreSQL : Requête interventions
+11. PostgreSQL → Road Service : Liste interventions
+12. Road Service → API Gateway : Données
+13. API Gateway → Frontend : JSON
+14. Frontend → Agent : Affiche liste
+15. Agent met à jour statut intervention
+16. Frontend → API Gateway : PUT /interventions/{id}
+17. API Gateway → Road Service : PUT /interventions/{id}
+18. Road Service → PostgreSQL : Mise à jour statut
+19. PostgreSQL → Road Service : Confirmation
+20. Road Service → API Gateway : Succès
+21. API Gateway → Frontend : Confirmation
+22. Frontend → Agent : Statut mis à jour
+
+POINTS CLÉS :
+- Authentification JWT pour sécuriser les échanges
+- API Gateway comme point d'entrée unique
+- Routage dynamique selon type d'incident
+- Agrégation de données pour le dashboard
+- Alertes temps réel via WebSocket
+- Workflow complet pour les interventions agents
+
+================================================================================
+5. DIAGRAMME DE CAS D'UTILISATION (use_case_diagram.puml)
+================================================================================
+
+DESCRIPTION GÉNÉRALE :
+Le diagramme de cas d'utilisation montre les fonctionnalités accessibles
+à chaque type d'acteur dans le système.
+
+ACTEURS DU SYSTÈME :
+- Administrateur : Gestion globale du système
+- Agent Municipal : Interventions sur le terrain
+- Citoyen : Signalement et suivi
+- Service Technique : Maintenance technique
+- Système IoT : Capteurs automatisés
+
+CAS D'UTILISATION PAR ACTEUR :
+
+ADMINISTRATEUR :
+- S'authentifier
+- Administrer le système
+- Consulter le tableau de bord
+- Consulter les statistiques
+
+AGENT MUNICIPAL :
+- S'authentifier
+- Gérer les collectes de déchets
+- Surveiller les routes
+- Monitorer les inondations
+- Gérer les alertes
+- Planifier les interventions
+- Consulter le tableau de bord
+
+CITOYEN :
+- S'authentifier
+- Signaler un incident
+- Consulter le tableau de bord
+
+SERVICE TECHNIQUE :
+- S'authentifier
+- Surveiller les routes
+- Monitorer les inondations
+- Consulter le tableau de bord
+
+SYSTÈME IOT :
+- Monitorer les inondations (automatique)
+- Gérer les collectes de déchets (automatique)
+
+DÉPENDANCES ENTRE CAS D'UTILISATION :
+- Signaler un incident → déclenche → Gérer les alertes
+- Monitorer les inondations → déclenche → Gérer les alertes
+- Surveiller les routes → nécessite → Planifier les interventions
+
+DÉTAILS DES CAS D'UTILISATION PRINCIPAUX :
+
+1. SIGNALEMENT D'INCIDENT
+   Types d'incidents supportés :
+   - Déchets (poubelles pleines, dépôts sauvages)
+   - Routes (nids de poule, fissures, effondrements)
+   - Inondations (zones à risque, crues)
+
+2. GESTION DES COLLECTES DÉCHETS
+   Fonctionnalités :
+   - État des poubelles en temps réel
+   - Planification des collectes
+   - Volume quotidien
+   - Optimisation des tournées
+
+3. SURVEILLANCE DES INONDATIONS
+   Fonctionnalités :
+   - Niveau d'eau en temps réel
+   - Seuils d'alerte dynamiques
+   - Tendance (hausse/stable)
+
+POINTS CLÉS :
+- Séparation claire des rôles et responsabilités
+- Intégration automatique via IoT
+- Workflow coordonné entre acteurs
+- Fonctionnalités adaptées à chaque profil
+
+================================================================================
+CONCLUSION
+================================================================================
+
+L'architecture Smart City Kinshasa est conçue pour être :
+- MODULAIRE : Microservices indépendants et spécialisés
+- ÉVOLUTIVE : Facile à étendre avec de nouveaux services
+- RÉACTIVE : Surveillance en temps réel et alertes automatiques
+- SÉCURISÉE : Authentification JWT et contrôle d'accès par rôle
+- SCALABLE : Architecture cloud-native avec Docker
+- INTELLIGENTE : Intégration IoT et analyse de données
+
+Les diagrammes illustrent une solution complète de gestion urbaine intelligente
+qui améliore la coordination entre citoyens et services municipaux tout en
+optimisant les ressources et en assurant une réactivité maximale face aux
+incidents.
+
+================================================================================

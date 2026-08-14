@@ -1,0 +1,161 @@
+
+CHAPITRE 3 : RÉALISATION DU NOUVEAU SYSTÈME
+
+Après la conception effectuée au chapitre précédent qui nous a permis de modéliser les données et les traitements à tous les niveaux d'abstraction comme l'exigent les diagrammes UML (activité, classe, déploiement, séquence, cas d'utilisation), dans ce dernier chapitre, il est question de concrétiser notre projet informatique en programmant à l'aide des technologies modernes adaptées aux architectures microservices.
+
+1. PRÉSENTATION DES TECHNOLOGIES DE PROGRAMMATION UTILISÉES
+
+1.1. Technologies de programmation utilisées
+
+Pour la réalisation de la plateforme Smart City Kinshasa, nous avons opté
+pour une architecture microservices moderne et scalable utilisant les
+technologies suivantes :
+
+BACKEND (Microservices Spring Boot) :
+- Java 17 (Programmation orientée objet avec Spring Boot 3.x)
+- PostgreSQL 15+ (Base de données relationnelle avec PostGIS pour données géospatiales)
+- Spring Data JPA (Accès aux données avec Hibernate)
+- Spring Security (Sécurité avec JWT et BCrypt)
+- Spring Cloud Gateway (API Gateway et routage)
+- Eureka Server (Service Discovery)
+- Redis (Cache distribué et sessions)
+- RabbitMQ (Message Queue pour événements)
+- Mosquitto MQTT (Protocole IoT pour capteurs)
+- Docker (Containerisation et orchestration)
+
+FRONTEND (React + TypeScript) :
+- React 18+ (Framework JavaScript moderne)
+- TypeScript (Typage statique pour la robustesse)
+- Vite (Build tool ultra-rapide)
+- Tailwind CSS (Framework CSS utility-first)
+- Lucide React (Icônes modernes)
+- Chart.js / Recharts (Graphiques et visualisations)
+- React Router (Navigation SPA)
+- Axios (Client HTTP pour appels API)
+
+SÉCURITÉ :
+- JWT (JSON Web Tokens pour authentification stateless)
+- BCrypt (Hachage sécurisé des mots de passe)
+- Spring Security (Filtrage des requêtes et autorisation)
+- Contrôle d'accès par rôle (RBAC : ADMIN, AGENT, CITOYEN, DECIDEUR)
+- Protection CSRF (Cross-Site Request Forgery)
+- CORS (Cross-Origin Resource Sharing configuré)
+- Validation des données avec Jakarta Validation
+- TLS/SSL (Chiffrement des communications)
+
+INFRASTRUCTURE :
+- Docker Compose (Orchestration des conteneurs)
+- Docker Networks (Isolation et communication des services)
+- Nginx (Reverse Proxy et serving static files)
+- PostgreSQL avec PostGIS (Données relationnelles et géospatiales)
+- Flyway (Migrations automatiques des bases de données)
+- HikariCP (Connection pooling optimisé)
+
+1.2. Justification du choix technologique
+
+Notre choix technologique se justifie par plusieurs facteurs :
+
+1. ARCHITECTURE MICROSERVICES
+   - Scalabilité horizontale : Chaque service peut être scalé indépendamment
+   - Résilience : L'échec d'un service n'affecte pas tout le système
+   - Maintenance : Mises à jour facilitées par le découpage en services
+   - Technologies éprouvées : Spring Boot est le standard Java pour les microservices
+
+2. BASE DE DONNÉES POSTGRESQL
+   - Robustesse : SGBD relationnel mature et fiable
+   - PostGIS : Support natif des données géospatiales pour la carte
+   - Performance : Optimisé pour les requêtes complexes
+   - Open Source : Pas de coûts de licence
+
+3. FRONTEND REACT
+   - Composants : Architecture modulaire et réutilisable
+   - Performance : Virtual DOM pour rendu optimisé
+   - Écosystème : Bibliothèques riches et communauté active
+   - TypeScript : Détection d'erreurs à la compilation
+
+4. DOCKER
+   - Reproductibilité : Environnement identique en dev et prod
+   - Portabilité : Déploiement simplifié sur n'importe quelle plateforme
+   - Isolation : Services isolés dans des conteneurs
+   - Scalabilité : Gestion facilitée des ressources
+
+5. SÉCURITÉ JWT
+   - Stateless : Pas de stockage de session côté serveur
+   - Scalabilité : Facilite le load balancing
+   - Standard : Large adoption dans les architectures modernes
+   - Flexibilité : Support des rôles et permissions dans le token
+
+1.3. Architecture technique détaillée
+
+Notre architecture technique suit les principes modernes de développement :
+
+COUCHE PRÉSENTATION (Frontend) :
+- Application Single Page (SPA) avec React
+- Routing côté client avec React Router
+- Appels API via Axios avec intercepteurs pour JWT
+- Gestion d'état avec Context API et hooks
+- Design responsive avec Tailwind CSS
+
+COUCHE API GATEWAY :
+- Point d'entrée unique pour toutes les requêtes
+- Routage dynamique vers les microservices
+- Validation JWT centralisée
+- Rate limiting et CORS
+- Load balancing
+
+COUCHE MICROSERVICES :
+- Auth Service : Gestion utilisateurs et authentification
+- Waste Service : Gestion des déchets et collectes
+- Road Service : Gestion des problèmes routiers
+- Flood Service : Surveillance des inondations
+- Dashboard Service : Agrégation de statistiques
+- GIS Service : Données géographiques
+- IoT Service : Intégration des capteurs
+
+COUCHE DONNÉES :
+- 5 bases PostgreSQL isolées par service
+- Migrations Flyway versionnées
+- Connection pooling avec HikariCP
+- Support PostGIS pour données géospatiales
+
+COUCHE INFRASTRUCTURE :
+- Redis pour cache et sessions
+- RabbitMQ pour messagerie événementielle
+- Mosquitto MQTT pour communication IoT
+- Eureka pour service discovery
+- Docker Compose pour orchestration
+
+1.4. Outils de développement
+
+Outils utilisés pendant le développement :
+
+IDE et Éditeurs :
+- IntelliJ IDEA (Backend Java)
+- VS Code (Frontend React)
+
+
+Gestion de version :
+- Git
+- GitHub (Hébergement)
+
+Build et Déploiement :
+- Maven (Backend Java)
+- npm (Frontend JavaScript)
+- Docker (Containerisation)
+- Docker Compose (Orchestration)
+
+Tests :
+- JUnit 5 (Tests unitaires)
+- Mockito (Tests de mocking)
+- Postman (Tests API manuels)
+
+Monitoring :
+- Docker ps (Statut conteneurs)
+- Eureka Dashboard (Service discovery)
+- Logs des applications
+
+Le choix technologique combinant Spring Boot, React, PostgreSQL et Docker
+nous a permis de concevoir une architecture moderne, scalable et maintenable.
+Cette approche microservices facilite l'évolution future du système tout en
+assurant des performances optimales et une sécurité robuste.
+
