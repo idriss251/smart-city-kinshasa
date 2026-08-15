@@ -12,6 +12,7 @@ import Header from './components/layout/Header';
 import Sidebar from './components/layout/Sidebar';
 import ReportList from './components/reports/ReportList';
 import RoadDashboard from './components/road/RoadDashboard';
+import TrafficDashboard from './components/traffic/TrafficDashboard';
 import WasteDashboard from './components/waste/WasteDashboard';
 import CitizenDashboard from './components/dashboard/CitizenDashboard';
 import AgentDashboard from './components/dashboard/AgentDashboard';
@@ -68,6 +69,7 @@ function AppContent() {
                     <Route path='/dashboard' element={isAuthenticated ? <Dashboard /> : <Navigate to='/login' replace />} />
                     <Route path='/waste' element={isAuthenticated ? <WasteDashboard /> : <Navigate to='/login' replace />} />
                     <Route path='/road' element={isAuthenticated ? <RoadDashboard /> : <Navigate to='/login' replace />} />
+                    <Route path='/traffic' element={isAuthenticated ? <TrafficDashboard /> : <Navigate to='/login' replace />} />
                     <Route path='/flood' element={isAuthenticated ? <FloodDashboard /> : <Navigate to='/login' replace />} />
                     <Route path='/reports' element={isAuthenticated ? <ReportList /> : <Navigate to='/login' replace />} />
                     <Route path='/gis' element={isAuthenticated ? <MapView /> : <Navigate to='/login' replace />} />

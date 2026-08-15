@@ -16,6 +16,11 @@ services:
     image: postgis/postgis:15-3.4
     environment: { POSTGRES_DB: roaddb, POSTGRES_USER: smartcity, POSTGRES_PASSWORD: smartcity }
     ports: ["${ROAD_DB_PORT:-55436}:5432"]
+  traffic-db:
+    image: postgis/postgis:15-3.4
+    environment: { POSTGRES_DB: trafficdb, POSTGRES_USER: smartcity, POSTGRES_PASSWORD: smartcity }
+    ports: ["${TRAFFIC_DB_PORT:-55440}:5432"]
+    volumes: ["./init-scripts:/docker-entrypoint-initdb.d"]
   flood-db:
     image: postgis/postgis:15-3.4
     environment: { POSTGRES_DB: flooddb, POSTGRES_USER: smartcity, POSTGRES_PASSWORD: smartcity }
@@ -59,6 +64,10 @@ services:
     build: ../backend/road-service
     environment: { SPRING_DATASOURCE_URL: jdbc:postgresql://road-db:5432/roaddb, EUREKA_URL: http://eureka-server:8761/eureka/ }
     depends_on: [road-db, eureka-server]
+  traffic-service:
+    build: ../backend/traffic-service
+    environment: { SPRING_DATASOURCE_URL: jdbc:postgresql://traffic-db:5432/trafficdb, EUREKA_URL: http://eureka-server:8761/eureka/ }
+    depends_on: [traffic-db, eureka-server]
   flood-service:
     build: ../backend/flood-service
     environment: { SPRING_DATASOURCE_URL: jdbc:postgresql://flood-db:5432/flooddb, EUREKA_URL: http://eureka-server:8761/eureka/ }

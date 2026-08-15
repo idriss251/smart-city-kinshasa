@@ -11,6 +11,7 @@ spring:
         - { id: betterauth, uri: http://better-auth-service:8089, predicates: [Path=/api/betterauth/**] }
         - { id: waste, uri: lb://waste-service, predicates: [Path=/api/waste/**] }
         - { id: road, uri: lb://road-service, predicates: [Path=/api/road/**] }
+        - { id: traffic, uri: lb://traffic-service, predicates: [Path=/api/traffic/**] }
         - { id: flood, uri: lb://flood-service, predicates: [Path=/api/flood/**] }
         - { id: citizen, uri: lb://citizen-service, predicates: [Path=/api/citizen/**] }
         - { id: gis, uri: lb://gis-service, predicates: [Path=/api/gis/**] }

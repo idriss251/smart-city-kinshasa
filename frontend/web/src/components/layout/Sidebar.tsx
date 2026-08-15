@@ -1,4 +1,4 @@
-import { AlertTriangle, ClipboardList, Droplets, LayoutDashboard, Map, PanelsTopLeft, Trash2, Users, Settings, ShieldCheck, Navigation } from 'lucide-react';
+import { AlertTriangle, Car, ClipboardList, Droplets, LayoutDashboard, Map, PanelsTopLeft, Trash2, Users, Settings, ShieldCheck, Navigation } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 
@@ -7,6 +7,7 @@ const citizenLinks = [
   { to: '/reports', label: 'Mes signalements', icon: ClipboardList },
   { to: '/waste', label: 'Déchets', icon: Trash2 },
   { to: '/road', label: 'Routes', icon: AlertTriangle },
+  { to: '/traffic', label: 'Trafic', icon: Car },
   { to: '/flood', label: 'Inondations', icon: Droplets },
   { to: '/gis', label: 'Carte', icon: Map },
 ];
@@ -14,6 +15,7 @@ const citizenLinks = [
 const agentLinks = [
   { to: '/agent', label: 'Mon tableau de bord', icon: LayoutDashboard },
   { to: '/road', label: 'Interventions routes', icon: AlertTriangle },
+  { to: '/traffic', label: 'Trafic', icon: Car },
   { to: '/waste', label: 'Collectes déchets', icon: Trash2 },
   { to: '/flood', label: 'Surveillance inondations', icon: Droplets },
   { to: '/gis', label: 'Navigation GPS', icon: Navigation },
@@ -25,6 +27,7 @@ const adminLinks = [
   { to: '/reports', label: 'Tous les signalements', icon: ClipboardList },
   { to: '/waste', label: 'Gestion déchets', icon: Trash2 },
   { to: '/road', label: 'Gestion routes', icon: AlertTriangle },
+  { to: '/traffic', label: 'Gestion trafic', icon: Car },
   { to: '/flood', label: 'Surveillance inondations', icon: Droplets },
   { to: '/gis', label: 'Carte système', icon: Map },
   { to: '/users', label: 'Gestion utilisateurs', icon: Users },
