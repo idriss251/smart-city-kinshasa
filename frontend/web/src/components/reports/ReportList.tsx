@@ -52,15 +52,36 @@ export default function ReportList() {
   }, []);
 
   const filtered = useMemo(() => {
-    return reports.filter((r) => {
-      const matchesSearch =
-        r.type?.toLowerCase().includes(search.toLowerCase()) ||
-        r.commune?.toLowerCase().includes(search.toLowerCase()) ||
-        r.description?.toLowerCase().includes(search.toLowerCase());
-      const matchesStatus = status ? r.status === status : true;
-      return matchesSearch && matchesStatus;
-    });
+    return reports
+      .filter((r) => {
+        const matchesSearch =
+          r.type?.toLowerCase().includes(search.toLowerCase()) ||
+          r.commune?.toLowerCase().includes(search.toLowerCase()) ||
+          r.description?.toLowerCase().includes(search.toLowerCase());
+        const matchesStatus = status ? r.status === status : true;
+        return matchesSearch && matchesStatus;
+      })
+      .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
   }, [reports, search, status]);
+
+  const groupedReports = useMemo(() => {
+    const groups: { date: string; reports: Report[] }[] = [];
+    for (const report of filtered) {
+      const date = new Date(report.createdAt).toLocaleDateString('fr-FR', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      });
+      const existing = groups.find((g) => g.date === date);
+      if (existing) {
+        existing.reports.push(report);
+      } else {
+        groups.push({ date, reports: [report] });
+      }
+    }
+    return groups;
+  }, [filtered]);
 
   const exportCsv = () => {
     const rows = filtered.map((r) => ({
@@ -122,16 +143,25 @@ export default function ReportList() {
       </div>
 
       <div className='grid gap-4 xl:grid-cols-[1.2fr_0.8fr]'>
-        <div className='space-y-3'>
-          {filtered.map((report) => (
-            <div key={report.id} className='panel flex items-center justify-between gap-4'>
-              <div>
-                <div className='text-sm font-semibold text-slate-900'>{report.type}</div>
-                <div className='mt-1 text-sm text-slate-500'>#{report.id} • {report.commune} • {new Date(report.createdAt).toLocaleDateString('fr-FR')}</div>
+        <div className='space-y-6'>
+          {groupedReports.map((group) => (
+            <div key={group.date}>
+              <div className='mb-2 text-sm font-bold uppercase tracking-wider text-slate-700'>
+                {group.date}
               </div>
-              <span className={`rounded-full px-3 py-1 text-sm font-semibold ${statusClass[report.status] || 'bg-slate-100 text-slate-700'}`}>
-                {statusLabel[report.status] || report.status}
-              </span>
+              <div className='space-y-3'>
+                {group.reports.map((report) => (
+                  <div key={report.id} className='panel flex items-center justify-between gap-4'>
+                    <div>
+                      <div className='text-sm font-semibold text-slate-900'>{report.type}</div>
+                      <div className='mt-1 text-sm text-slate-500'>#{report.id} • {report.commune} • {new Date(report.createdAt).toLocaleTimeString('fr-FR')}</div>
+                    </div>
+                    <span className={`rounded-full px-3 py-1 text-sm font-semibold ${statusClass[report.status] || 'bg-slate-100 text-slate-700'}`}>
+                      {statusLabel[report.status] || report.status}
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
           ))}
           {filtered.length === 0 && (
