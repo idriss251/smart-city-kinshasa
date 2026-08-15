@@ -1,4 +1,4 @@
-import { AlertCircle, BellRing, ClipboardList, MapPinned, Plus, ShieldCheck, TrendingUp } from 'lucide-react';
+import { AlertCircle, BellRing, Car, ClipboardList, MapPinned, Plus, ShieldCheck, TrendingUp } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { api } from '../../services/api';
@@ -175,6 +175,19 @@ export default function CitizenDashboard() {
               <div>
                 <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">Alertes inondations</div>
                 <div className="text-xs text-slate-600 dark:text-slate-400">Surveillance zones</div>
+              </div>
+            </Link>
+
+            <Link
+              to="/traffic"
+              className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:border-amber-300 hover:bg-amber-50 dark:border-slate-700 dark:bg-slate-800/70 dark:hover:border-amber-900 dark:hover:bg-amber-950/40"
+            >
+              <div className="rounded-xl bg-amber-100 p-2 text-amber-600 dark:bg-amber-900/50 dark:text-amber-400">
+                <Car size={20} />
+              </div>
+              <div>
+                <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">Embouteillages</div>
+                <div className="text-xs text-slate-600 dark:text-slate-400">Voir le trafic en temps réel</div>
               </div>
             </Link>
           </div>

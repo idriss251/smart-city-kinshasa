@@ -117,6 +117,7 @@ export default function ReportForm({ onClose, onSuccess }: ReportFormProps) {
               <option value="AUTRE">Autre</option>
               <option value="DECHET">Déchets / Propreté</option>
               <option value="ROUTE">Problème routier</option>
+              <option value="EMBOUTEILLAGE">Embouteillage</option>
               <option value="INONDATION">Inondation</option>
               <option value="ECLAIRAGE">Éclairage public</option>
               <option value="EAU">Eau / Adduction</option>
